@@ -1,0 +1,58 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.fmt" prefix="fmt" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Village Report - ${village.name}</title>
+    <meta charset="UTF-8"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <style>
+        .photo-thumb {
+            width: 120px; height: 120px; object-fit: cover;
+            border: 1px solid #eee; border-radius: 4px; margin: 0 0.5rem 0.5rem 0;
+        }
+        .content-preview { white-space: pre-wrap; background:#f5f5f5; padding:0.5rem; }
+    </style>
+</head>
+<body>
+<div class="container mt-4">
+    <a href="${pageContext.request.contextPath}/admin/dashboard" class="btn btn-link">&larr; Back to Villages</a>
+
+    <h1>Village Report: <c:out value="${village.name}"/></h1>
+    <p class="text-muted">
+        District: <c:out value="${village.district}"/> &nbsp;|&nbsp; Registered Users: ${userCount}
+        &nbsp;|&nbsp; Complaints: ${complaints.size()}
+    </p>
+
+    <c:forEach var="complaint" items="${complaints}">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">From <c:out value="${complaint.user.username}"/></h5>
+                <p class="card-text">
+                    <strong>Complaint:</strong>
+                    <div class="content-preview"><c:out value="${complaint.content}"/></div>
+                </p>
+                <p class="card-text">
+                    <small class="text-muted">Submitted on <c:out value="${complaint.createdAt}"/></small>
+                </p>
+                <div>
+                    <strong>Photos:</strong>
+                    <div class="d-flex flex-wrap mt-2">
+                        <c:forEach var="photo" items="${complaint.photos}">
+                            <img src="${pageContext.request.contextPath}/${photo.filePath}"
+                                 class="photo-thumb" alt="complaint photo"/>
+                        </c:forEach>
+                        <c:if test="${empty complaint.photos}">None</c:if>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </c:forEach>
+
+    <c:if test="${empty complaints}">
+        <div class="alert alert-info">No complaints submitted by this village yet.</div>
+    </c:if>
+</div>
+</body>
+</html>

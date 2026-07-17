@@ -33,43 +33,82 @@
 <body>
 <div class="login-box">
     <h2>Login</h2>
-    <c:if test="${param.error != null}">
-        <c:choose>
-            <c:when test="${param.error == 'credentials'}">
-                <div class="alert alert-danger">Incorrect password. Please try again.</div>
-            </c:when>
-            <c:when test="${param.error == 'disabled'}">
-                <div class="alert alert-danger">This account is disabled. Please contact an administrator.</div>
-            </c:when>
-            <c:when test="${param.error == 'locked'}">
-                <div class="alert alert-danger">This account is locked. Please contact an administrator.</div>
-            </c:when>
-            <c:otherwise>
-                <div class="alert alert-danger">Invalid username or password.</div>
-            </c:otherwise>
-        </c:choose>
-    </c:if>
-    <c:if test="${param.logout != null}">
-        <div class="alert alert-success">You have been logged out</div>
-    </c:if>
-    <c:if test="${param.resetSuccess != null}">
-        <div class="alert alert-success">Your password has been reset. Please sign in.</div>
-    </c:if>
-    <form action="${pageContext.request.contextPath}/login" method="post">
-        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+    <div id="errorBox" class="alert alert-danger d-none" role="alert"></div>
+    <form id="loginForm">
         <div class="mb-3">
             <label for="username" class="form-label">Username</label>
             <input type="text" class="form-control" id="username" name="username" required autofocus/>
         </div>
         <div class="mb-3">
             <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" name="password" required/>
+            <div class="input-group">
+                <input type="password" class="form-control" id="password" name="password" required/>
+                <button class="btn btn-outline-secondary" type="button" id="togglePassword" aria-label="Show password">
+                    <svg id="eyeOpen" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                        <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 4.5a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9z"/>
+                    </svg>
+                    <svg id="eyeClosed" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16" style="display:none;">
+                        <path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7.028 7.028 0 0 0-2.79.588l.77.771A5.944 5.944 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.777C13.604 8.594 11.969 10.5 8 10.5c-.727 0-1.42-.122-2.07-.347l-.77.771A7.028 7.028 0 0 0 8 13.5C13 13.5 16 8 16 8s-.939-1.721-2.641-3.262z"/>
+                        <path d="M11.297 9.352a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.828 2.828l.822.822zm-4.353-2.06a2.5 2.5 0 0 1 2.828 2.828l-.822-.822a2.5 2.5 0 0 0-2.006-2.006L6.944 7.29z"/>
+                        <path d="M3.22 9.222 1.5 11.5l1.06 1.06 1.77-2.06a5.944 5.944 0 0 0 2.06.944l-.823-.823a4.5 4.5 0 0 1-3.067-3.067L1.5 4.5 2.56 3.44l1.66 1.66A7.03 7.03 0 0 1 8 2.5c.79 0 1.547.13 2.254.366l-.823-.823A7.03 7.03 0 0 0 8 1.5C3 1.5 0 8 0 8c.94 1.72 2.641 3.262 4.703 4.222z"/>
+                    </svg>
+                </button>
+            </div>
         </div>
-        <button type="submit" class="btn btn-primary">Sign In</button>
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary flex-fill">Submit</button>
+            <button type="reset" class="btn btn-outline-secondary flex-fill">Reset</button>
+        </div>
     </form>
-    <div class="text-center mt-3">
-        <a href="${pageContext.request.contextPath}/forgot-password" class="btn btn-link btn-sm">Forgot Password?</a>
-    </div>
+    <script>
+        const ctx = "${pageContext.request.contextPath}";
+        document.getElementById("loginForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const errorBox = document.getElementById("errorBox");
+            errorBox.classList.add("d-none");
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            try {
+                const res = await fetch(ctx + "/api/auth/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, password })
+                });
+                if (!res.ok) {
+                    const msg = await res.text();
+                    errorBox.textContent = msg || "Invalid username or password";
+                    errorBox.classList.remove("d-none");
+                    return;
+                }
+                const data = await res.json();
+                // Store token and redirect into the app (server also sets the token cookie)
+                localStorage.setItem("jwt", data.token);
+                let landing = ctx + "/complaint";
+                try {
+                    const payload = JSON.parse(atob(data.token.split(".")[1]));
+                    if (Array.isArray(payload.roles) && payload.roles.includes("ROLE_ADMIN")) {
+                        landing = ctx + "/admin/dashboard";
+                    }
+                } catch (e) { /* default to complaint form */ }
+                window.location.href = landing;
+            } catch (err) {
+                errorBox.textContent = "Login request failed";
+                errorBox.classList.remove("d-none");
+            }
+        });
+
+        const toggleBtn = document.getElementById("togglePassword");
+        const pwd = document.getElementById("password");
+        const eyeOpen = document.getElementById("eyeOpen");
+        const eyeClosed = document.getElementById("eyeClosed");
+        toggleBtn.addEventListener("click", function () {
+            const isHidden = pwd.type === "password";
+            pwd.type = isHidden ? "text" : "password";
+            eyeOpen.style.display = isHidden ? "none" : "inline";
+            eyeClosed.style.display = isHidden ? "inline" : "none";
+        });
+    </script>
     <p style="font-size:0.9rem; text-align:center; color:#6c757d; margin-top:1rem;">
         &copy; 2025 Child Protection System
     </p>

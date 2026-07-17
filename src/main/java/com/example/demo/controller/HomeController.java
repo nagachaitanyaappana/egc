@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.User;
+import com.example.demo.model.Village;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.VillageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,9 @@ public class HomeController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private VillageRepository villageRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -36,7 +41,9 @@ public class HomeController {
                           @RequestParam String password, @RequestParam(defaultValue = "USER") String role,
                           @RequestParam String villageName) {
         String encodedPassword = passwordEncoder.encode(password);
-        User user = new User(username, email, encodedPassword, role, villageName);
+        Village village = villageRepository.findByName(villageName)
+                .orElseGet(() -> villageRepository.save(new Village(villageName, null)));
+        User user = new User(username, email, encodedPassword, role, village);
         userRepository.save(user);
         return "redirect:/";
     }

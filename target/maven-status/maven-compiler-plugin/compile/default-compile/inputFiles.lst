@@ -1,5 +1,6 @@
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/model/Complaint.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/security/SecurityConfig.java
+/home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/security/JwtAuthenticationFilter.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/model/User.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/model/Photo.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/security/CustomUserDetailsService.java
@@ -7,11 +8,14 @@
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/repository/PhotoRepository.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/service/FileStorageService.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/controller/VillageLandingController.java
+/home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/security/JwtUtil.java
+/home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/repository/VillageRepository.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/controller/ComplaintController.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/repository/UserRepository.java
+/home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/controller/AuthController.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/DemoApplication.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/repository/ComplaintRepository.java
+/home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/model/Village.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/controller/AdminDashboardController.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/controller/HomeController.java
-/home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/security/CustomAuthenticationFailureHandler.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/controller/PasswordResetController.java

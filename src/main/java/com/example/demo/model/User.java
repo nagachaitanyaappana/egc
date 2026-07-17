@@ -23,8 +23,12 @@ public class User {
     @Column(nullable = false, length = 50)
     private String role; // e.g., "USER" or "ADMIN"
 
-    @Column(nullable = false, length = 50)
-    private String villageName; // name of the village the user belongs to
+    @ManyToOne
+    @JoinColumn(name = "village_id")
+    private Village village; // the village this user belongs to
+
+    @Column(name = "village_name", length = 50)
+    private String villageName; // denormalized for convenience / reports
 
     private LocalDateTime createdAt;
 
@@ -38,12 +42,12 @@ public class User {
         this.createdAt = LocalDateTime.now();
     }
 
-    public User(String username, String email, String password, String role, String villageName) {
+    public User(String username, String email, String password, String role, Village village) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.role = role;
-        this.villageName = villageName;
+        setVillage(village);
         this.createdAt = LocalDateTime.now();
     }
 
@@ -86,6 +90,15 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public Village getVillage() {
+        return village;
+    }
+
+    public void setVillage(Village village) {
+        this.village = village;
+        this.villageName = (village != null) ? village.getName() : null;
     }
 
     public String getVillageName() {

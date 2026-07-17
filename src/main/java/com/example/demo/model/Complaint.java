@@ -15,7 +15,7 @@ public class Complaint {
     @ManyToOne
     private User user;
 
-    @Lob
+    @Column(length = 4000)
     private String content;
 
     private LocalDateTime createdAt = LocalDateTime.now();
