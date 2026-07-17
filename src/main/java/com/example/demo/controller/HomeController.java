@@ -25,8 +25,10 @@ public class HomeController {
     }
 
     @PostMapping("/users")
-    public String addUser(@RequestParam String username, @RequestParam String email) {
-        User user = new User(username, email);
+    public String addUser(@RequestParam String username, @RequestParam String email,
+                          @RequestParam String password, @RequestParam(defaultValue = "USER") String role,
+                          @RequestParam String villageName) {
+        User user = new User(username, email, password, role, villageName);
         userRepository.save(user);
         return "redirect:/";
     }

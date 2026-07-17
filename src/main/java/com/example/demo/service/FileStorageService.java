@@ -3,6 +3,7 @@ package com.example.demo.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.nio.file.*;
@@ -12,7 +13,7 @@ public class FileStorageService {
 
     private final Path uploadDir;
 
-    public FileStorageService(@Value("\${file.upload-dir}") String uploadDirPath) throws IOException {
+    public FileStorageService(@Value("${file.upload-dir}") String uploadDirPath) throws IOException {
         this.uploadDir = Paths.get(uploadDirPath);
         if (!Files.exists(uploadDir)) {
             Files.createDirectories(uploadDir);
