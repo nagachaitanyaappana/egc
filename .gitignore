@@ -1,1 +1,18 @@
-.aider*
+# Maven / Java
+target/
+!.mvn
+
+# IntelliJ / Eclipse
+.idea/
+*.iml
+*.iws
+*.ipr
+*.classpath
+*.project
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Local config files that should NOT be committed
+*.local
