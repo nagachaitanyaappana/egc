@@ -22,10 +22,8 @@ public class HomeController {
     private PasswordEncoder passwordEncoder;
 
     @GetMapping("/")
-    public String home(Model model) {
-        List<User> users = userRepository.findAll();
-        model.addAttribute("users", users);
-        return "index";
+    public String home() {
+        return "redirect:/login";
     }
 
     @PostMapping("/users")
