@@ -28,6 +28,7 @@
     </c:if>
 
     <form action="${pageContext.request.contextPath}/complaint" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         <div class="row g-3">
             <div class="col-12">
                 <div class="mb-3">

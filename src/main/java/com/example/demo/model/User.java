@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "users")
 public class User {
 
     @Id
@@ -26,6 +27,11 @@ public class User {
     private String villageName; // name of the village the user belongs to
 
     private LocalDateTime createdAt;
+
+    @Column(length = 64)
+    private String resetToken;
+
+    private LocalDateTime resetTokenExpiry;
 
     // Constructors
     public User() {
@@ -96,5 +102,21 @@ public class User {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
+    public LocalDateTime getResetTokenExpiry() {
+        return resetTokenExpiry;
+    }
+
+    public void setResetTokenExpiry(LocalDateTime resetTokenExpiry) {
+        this.resetTokenExpiry = resetTokenExpiry;
     }
 }

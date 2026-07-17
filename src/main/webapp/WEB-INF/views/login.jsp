@@ -34,12 +34,29 @@
 <div class="login-box">
     <h2>Login</h2>
     <c:if test="${param.error != null}">
-        <div class="alert alert-danger">Invalid username or password</div>
+        <c:choose>
+            <c:when test="${param.error == 'credentials'}">
+                <div class="alert alert-danger">Incorrect password. Please try again.</div>
+            </c:when>
+            <c:when test="${param.error == 'disabled'}">
+                <div class="alert alert-danger">This account is disabled. Please contact an administrator.</div>
+            </c:when>
+            <c:when test="${param.error == 'locked'}">
+                <div class="alert alert-danger">This account is locked. Please contact an administrator.</div>
+            </c:when>
+            <c:otherwise>
+                <div class="alert alert-danger">Invalid username or password.</div>
+            </c:otherwise>
+        </c:choose>
     </c:if>
     <c:if test="${param.logout != null}">
         <div class="alert alert-success">You have been logged out</div>
     </c:if>
+    <c:if test="${param.resetSuccess != null}">
+        <div class="alert alert-success">Your password has been reset. Please sign in.</div>
+    </c:if>
     <form action="${pageContext.request.contextPath}/login" method="post">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         <div class="mb-3">
             <label for="username" class="form-label">Username</label>
             <input type="text" class="form-control" id="username" name="username" required autofocus/>
@@ -50,6 +67,9 @@
         </div>
         <button type="submit" class="btn btn-primary">Sign In</button>
     </form>
+    <div class="text-center mt-3">
+        <a href="${pageContext.request.contextPath}/forgot-password" class="btn btn-link btn-sm">Forgot Password?</a>
+    </div>
     <p style="font-size:0.9rem; text-align:center; color:#6c757d; margin-top:1rem;">
         &copy; 2025 Child Protection System
     </p>

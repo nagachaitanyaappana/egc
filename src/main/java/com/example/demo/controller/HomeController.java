@@ -26,6 +26,11 @@ public class HomeController {
         return "redirect:/login";
     }
 
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+
     @PostMapping("/users")
     public String addUser(@RequestParam String username, @RequestParam String email,
                           @RequestParam String password, @RequestParam(defaultValue = "USER") String role,

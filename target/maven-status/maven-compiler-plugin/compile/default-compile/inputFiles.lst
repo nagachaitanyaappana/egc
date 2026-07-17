@@ -13,3 +13,5 @@
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/repository/ComplaintRepository.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/controller/AdminDashboardController.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/controller/HomeController.java
+/home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/security/CustomAuthenticationFailureHandler.java
+/home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/controller/PasswordResetController.java

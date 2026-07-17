@@ -34,6 +34,7 @@
     
     <h3>Add New User</h3>
     <form action="${pageContext.request.contextPath}/users" method="post">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         <div class="mb-3">
             <label for="username" class="form-label">Username</label>
             <input type="text" class="form-control" id="username" name="username" required/>
