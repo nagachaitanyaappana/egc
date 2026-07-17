@@ -1,7 +1,6 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import java.util.List;
 
 @Entity
 public class Photo {
@@ -45,3 +44,4 @@ public class Photo {
     public void setComplaint(Complaint complaint) {
         this.complaint = complaint;
     }
+}

@@ -20,7 +20,7 @@
             margin-bottom: 0.5rem;
         }
         .content-preview {
-            whitespace: pre-wrap;
+            white-space: pre-wrap;
             background-color: #f5f5f5;
             padding: 0.5rem;
         }
@@ -41,8 +41,8 @@
                 </p>
                 <p class="card-text"><small class="text-muted">Submitted on <span th:text="${#temporals.format(complaint.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></small></p>
                 <p>Photos:</p>
-                <div th:each="photo : #lists.get(complaint.photos, 0)" class="d-flex">
-                    <img th:src="@{'/' + ${photo.filePath}"
+                <div th:each="photo : ${complaint.photos}" class="d-flex">
+                    <img th:src="@{'/' + ${photo.filePath}}"
                          class="photo-thumb img-fluid rounded mb-2"
                          style="width: 100px; height: 100px; object-fit: cover;"/>
                 </div>
