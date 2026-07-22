@@ -11,8 +11,40 @@
         .photo-thumb {
             width: 120px; height: 120px; object-fit: cover;
             border: 1px solid #eee; border-radius: 4px; margin: 0 0.5rem 0.5rem 0;
+            cursor: pointer;
+            transition: transform .2s ease;
         }
+        .photo-thumb:hover { transform: scale(1.05); }
         .content-preview { white-space: pre-wrap; background:#f5f5f5; padding:0.5rem; }
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        .lightbox.active { display: flex; }
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 4px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
     </style>
 </head>
 <body>
@@ -48,7 +80,8 @@
                     <div class="d-flex flex-wrap mt-2">
                         <c:forEach var="photo" items="${complaint.photos}">
                             <img src="${pageContext.request.contextPath}/${photo.filePath}"
-                                 class="photo-thumb" alt="complaint photo"/>
+                                 class="photo-thumb" alt="complaint photo"
+                                 onclick="openLightbox(this.src)"/>
                         </c:forEach>
                         <c:if test="${empty complaint.photos}">None</c:if>
                     </div>
@@ -61,5 +94,24 @@
         <div class="alert alert-info">No complaints submitted by this village yet.</div>
     </c:if>
 </div>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <span class="lightbox-close">&times;</span>
+    <img id="lightboxImg" src="" alt="Full size"/>
+</div>
+
+<script>
+    function openLightbox(src) {
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightboxImg');
+        lightboxImg.src = src;
+        lightbox.classList.add('active');
+    }
+
+    function closeLightbox() {
+        const lightbox = document.getElementById('lightbox');
+        lightbox.classList.remove('active');
+    }
+</script>
 </body>
 </html>

@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.nio.file.*;
+import java.util.UUID;
 
 @Service
 public class FileStorageService {
@@ -21,7 +22,13 @@ public class FileStorageService {
     }
 
     public String store(MultipartFile file) throws IOException {
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        String originalName = StringUtils.cleanPath(file.getOriginalFilename());
+        String extension = "";
+        int dotIndex = originalName.lastIndexOf('.');
+        if (dotIndex >= 0) {
+            extension = originalName.substring(dotIndex);
+        }
+        String fileName = UUID.randomUUID() + extension;
         Path filePath = this.uploadDir.resolve(fileName).normalize();
         try (InputStream is = file.getInputStream()) {
             Files.copy(is, filePath, StandardCopyOption.REPLACE_EXISTING);
