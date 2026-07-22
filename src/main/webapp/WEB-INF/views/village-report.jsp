@@ -17,7 +17,14 @@
 </head>
 <body>
 <div class="container mt-4">
-    <a href="${pageContext.request.contextPath}/admin/dashboard" class="btn btn-link">&larr; Back to Villages</a>
+    <c:choose>
+    <c:when test="${not empty mandalId}">
+        <a href="${pageContext.request.contextPath}/admin/mandal/${mandalId}" class="btn btn-link">&larr; Back</a>
+    </c:when>
+    <c:otherwise>
+        <a href="${pageContext.request.contextPath}/admin/dashboard" class="btn btn-link">&larr; Back</a>
+    </c:otherwise>
+</c:choose>
 
     <h1>Village Report: <c:out value="${village.name}"/></h1>
     <p class="text-muted">

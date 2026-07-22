@@ -21,11 +21,21 @@ public class Village {
     @OneToMany(mappedBy = "village", cascade = CascadeType.ALL)
     private List<User> users = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "mandal_id")
+    private Mandal mandal;
+
     public Village() {}
 
     public Village(String name, String district) {
         this.name = name;
         this.district = district;
+    }
+
+    public Village(String name, String district, Mandal mandal) {
+        this.name = name;
+        this.district = district;
+        this.mandal = mandal;
     }
 
     public Long getId() { return id; }
@@ -39,4 +49,7 @@ public class Village {
 
     public List<User> getUsers() { return users; }
     public void setUsers(List<User> users) { this.users = users; }
+
+    public Mandal getMandal() { return mandal; }
+    public void setMandal(Mandal mandal) { this.mandal = mandal; }
 }

@@ -44,13 +44,12 @@ public class ComplaintController {
     @PostMapping("/complaint")
     public String submitComplaint(@RequestParam String complaintContent,
                                   @RequestParam("photos") MultipartFile[] photos,
-                                  @AuthenticationPrincipal UserDetails userDetails) throws IOException {
+                                  @AuthenticationPrincipal UserDetails userDetails,
+                                  Model model) throws IOException {
 
-        // Get current authenticated user from the security context
         User currentUser = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new IllegalStateException("Authenticated user not found"));
 
-        // Create complaint and save with photos in one go
         Complaint complaint = new Complaint();
         complaint.setUser(currentUser);
         complaint.setContent(complaintContent);
@@ -66,6 +65,7 @@ public class ComplaintController {
         complaint.setPhotos(savedPhotos);
         complaintRepository.save(complaint);
 
-        return "redirect:/complaint?success";
+        model.addAttribute("success", true);
+        return "complaint-form";
     }
 }

@@ -23,12 +23,11 @@
 <div class="container complaint-container">
     <h2>Submit Your Complaint</h2>
 
-    <c:if test="${param.success != null}">
+    <c:if test="${not empty success}">
         <div class="alert alert-success">Complaint submitted successfully!</div>
     </c:if>
 
     <form action="${pageContext.request.contextPath}/complaint" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         <div class="row g-3">
             <div class="col-12">
                 <div class="mb-3">

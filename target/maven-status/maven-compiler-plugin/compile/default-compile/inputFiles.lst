@@ -1,4 +1,5 @@
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/model/Complaint.java
+/home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/model/Mandal.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/security/SecurityConfig.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/security/JwtAuthenticationFilter.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/model/User.java
@@ -7,6 +8,7 @@
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/config/WebConfig.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/repository/PhotoRepository.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/service/FileStorageService.java
+/home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/repository/MandalRepository.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/controller/VillageLandingController.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/security/JwtUtil.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/repository/VillageRepository.java
@@ -19,3 +21,4 @@
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/controller/AdminDashboardController.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/controller/HomeController.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/controller/PasswordResetController.java
+/home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/config/DataLoader.java
