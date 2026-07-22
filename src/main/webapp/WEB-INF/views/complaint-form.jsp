@@ -45,7 +45,7 @@
             position: absolute;
             top: 4px;
             right: 4px;
-            background: rgba(0,0,0,0.5);
+            background: #dc3545;
             color: #fff;
             border: none;
             border-radius: 50%;
