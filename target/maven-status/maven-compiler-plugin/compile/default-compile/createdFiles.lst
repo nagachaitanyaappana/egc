@@ -1,8 +1,12 @@
 com/example/demo/config/WebConfig.class
+com/example/demo/model/Mandal.class
 com/example/demo/repository/PhotoRepository.class
 com/example/demo/security/SecurityConfig.class
+com/example/demo/security/JwtUtil.class
 com/example/demo/DemoApplication.class
+com/example/demo/controller/AuthController$LoginRequest.class
 com/example/demo/controller/HomeController.class
+com/example/demo/config/DataLoader.class
 com/example/demo/model/User.class
 com/example/demo/controller/ComplaintController.class
 com/example/demo/model/Complaint.class
@@ -10,6 +14,12 @@ com/example/demo/service/FileStorageService.class
 com/example/demo/controller/VillageLandingController.class
 com/example/demo/repository/UserRepository.class
 com/example/demo/controller/AdminDashboardController.class
+com/example/demo/model/Village.class
+com/example/demo/repository/MandalRepository.class
+com/example/demo/repository/VillageRepository.class
+com/example/demo/security/JwtAuthenticationFilter.class
 com/example/demo/security/CustomUserDetailsService.class
 com/example/demo/repository/ComplaintRepository.class
 com/example/demo/model/Photo.class
+com/example/demo/controller/PasswordResetController.class
+com/example/demo/controller/AuthController.class
