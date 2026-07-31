@@ -1,0 +1,475 @@
+/*//////////////////////////////////////////////////////////////////
+ [ RESTYLE TAG ]*/
+
+* {
+	margin: 0px; 
+	padding: 0px; 
+	box-sizing: border-box;
+}
+
+body, html {
+	height: 100%;
+	font-family: OpenSans-Regular, sans-serif;
+}
+
+/*---------------------------------------------*/
+a {
+	font-size: 14px;
+	line-height: 1.7;
+	color: #666666;
+	margin: 0px;
+	transition: text-decoration 0.4s;
+	-webkit-transition: text-decoration 0.4s;
+  -o-transition: text-decoration 0.4s;
+  -moz-transition: text-decoration 0.4s;
+}
+
+a:focus {
+	outline: none !important;
+}
+
+a:hover {
+	text-decoration: none;
+}
+
+/*---------------------------------------------*/
+h1,h2,h3,h4,h5,h6 {
+	margin: 0px;
+}
+
+p {
+	font-size: 14px;
+	line-height: 1.7;
+	color: #666666;
+	margin: 0px;
+}
+
+ul, li {
+	margin: 0px;
+	list-style-type: none;
+}
+
+
+/*---------------------------------------------*/
+input {
+	outline: none;
+	border: none;
+}
+
+textarea {
+  outline: none;
+  border: none;
+}
+
+textarea:focus, input:focus {
+  border-color: transparent !important;
+}
+
+input::-webkit-input-placeholder { color: #666666;}
+input:-moz-placeholder { color: #666666;}
+input::-moz-placeholder { color: #666666;}
+input:-ms-input-placeholder { color: #666666;}
+
+textarea::-webkit-input-placeholder { color: #666666;}
+textarea:-moz-placeholder { color: #666666;}
+textarea::-moz-placeholder { color: #666666;}
+textarea:-ms-input-placeholder { color: #666666;}
+
+/*---------------------------------------------*/
+button {
+	outline: none !important;
+	border: none;
+}
+
+button:hover {
+	cursor: pointer;
+}
+
+iframe {
+	border: none !important;
+}
+label[for="show-pass"] {
+  display: none;                        
+}
+/*//////////////////////////////////////////////////////////////////
+ [ Utility ]*/
+.show-pass {
+  margin-top: 0px;            
+}
+.txt1 {
+  font-size: 15px;
+  line-height: 1.4;
+  color: #555;
+}
+
+.txt2 {
+  font-size: 15px;
+  line-height: 1.4;
+  color: #0B847A;
+  text-decoration: none;
+}
+.txt2:hover {
+    color: #0B847A;
+    text-decoration: underline;
+}
+
+.hov1:hover {
+  text-decoration: underline;
+}
+
+
+/*//////////////////////////////////////////////////////////////////
+ [ login ]*/
+
+input[type="checkbox"] {
+  position: relative;
+  top: 1px;                        
+}
+
+.limiter {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.container-login100 {
+  width: 100%;  
+  min-height: 100vh;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+   background: -webkit-linear-gradient(bottom left, #1a4d8f, #0d2b5e);
+   background: -o-linear-gradient(bottom left, #1a4d8f, #0d2b5e);
+   background: linear-gradient(to top right, #1a4d8f, #0d2b5e);
+}
+
+.wrap-login100 {
+  width: 500px;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+
+  box-shadow: 0 3px 20px 0px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0 3px 20px 0px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0 3px 20px 0px rgba(0, 0, 0, 0.1);
+  -o-box-shadow: 0 3px 20px 0px rgba(0, 0, 0, 0.1);
+  -ms-box-shadow: 0 3px 20px 0px rgba(0, 0, 0, 0.1);
+  padding: 45px 40px 35px;
+}
+
+
+/*==================================================================
+[ Form ]*/
+
+.login100-form {
+  width: 100%;
+  position: relative;
+}
+
+.login100-form.has-error {
+  padding-top: 10px;
+}
+
+.login100-form-title {
+  display: block;
+  font-size: 30px;
+  color: #0B847A;
+  line-height: 1.2;
+  text-align: center;
+  padding-bottom: 50px;
+}
+
+.login-title {
+  display: block;
+  font-size: 30px;
+  color: #0B847A;
+  line-height: 1.2;
+  text-align: center;
+  padding-bottom: 50px;
+}
+
+/*------------------------------------------------------------------
+[ Input ]*/
+
+.wrap-input100 {
+  width: 100%;
+  position: relative;
+  background-color: #fff;
+  border: 1px solid #e6e6e6;
+  margin-bottom: 25px;
+}
+
+.wrap-input100.rs1 {
+  margin-top: 10px;
+}
+
+input.input100 {
+  display: block;
+  width: 100%;
+  background: transparent;
+  font-size: 15px;
+  color: #666666;
+  line-height: 1.2;
+  height: 45px;
+  padding: 0 25px 0 25px;
+}
+
+
+/*---------------------------------------------*/
+input.input100 {
+  height: 45px;
+  padding: 0 25px 0 25px;
+}
+
+/*------------------------------------------------------------------
+[ Focus Input ]*/
+
+.focus-input100-1, 
+.focus-input100-2 {
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.focus-input100-1::before,
+.focus-input100-2::before {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 0;
+  height: 1px;
+  background-color: #0084a8;
+}
+
+.focus-input100-1::before {
+  top: -1px;
+  left: 0;
+}
+
+.focus-input100-2::before {
+  bottom: -1px;
+  right: 0;
+}
+
+.focus-input100-1::after,
+.focus-input100-2::after {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 1px;
+  height: 0;
+  background-color: #0084a8;
+}
+
+.focus-input100-1::after {
+  top: 0;
+  right: -1px;
+}
+
+.focus-input100-2::after {
+  bottom: 0;
+  left: -1px;
+}
+
+.input100:focus + .focus-input100-1::before {
+  -webkit-animation: full-w 0.2s linear 0s;
+  animation: full-w 0.2s linear 0s;
+  animation-fill-mode: both;
+  -webkit-animation-fill-mode: both;
+}
+
+.input100:focus + .focus-input100-1::after {
+  -webkit-animation: full-h 0.1s linear 0.2s;
+  animation: full-h 0.1s linear 0.2s;
+  animation-fill-mode: both;
+  -webkit-animation-fill-mode: both;
+}
+
+.input100:focus + .focus-input100-1 + .focus-input100-2::before {
+  -webkit-animation: full-w 0.2s linear 0.3s;
+  animation: full-w 0.2s linear 0.3s;
+  animation-fill-mode: both;
+  -webkit-animation-fill-mode: both;
+}
+
+.input100:focus + .focus-input100-1 + .focus-input100-2::after {
+  -webkit-animation: full-h 0.1s linear 0.5s;
+  animation: full-h 0.1s linear 0.5s;
+  animation-fill-mode: both;
+  -webkit-animation-fill-mode: both;
+}
+
+
+@keyframes full-w {
+  to {
+    width: calc(100% + 1px);
+  }
+}
+
+@keyframes full-h {
+  to {
+    height: calc(100% + 1px);
+  }
+}
+
+
+/*------------------------------------------------------------------
+[ Button ]*/
+.container-login100-form-btn {
+  width: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.login100-form-btn {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px auto 0px auto;
+    padding: 16px 32px;
+    border-radius: 6px;
+    background-color: #0B847A;
+    font-size: 14px;
+    color: #fff;
+    line-height: 1.2;
+    text-transform: uppercase;
+    -webkit-transition: background-color 0.5s;
+    -o-transition: background-color 0.5s;
+    -moz-transition: background-color 0.5s;
+    transition: background-color 0.5s;
+}
+
+.login100-form-btn:hover {
+  background-color: #0a6b60;
+}
+
+/*------------------------------------------------------------------
+[ Error Message ]*/
+.login-error-box {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  background-color: #dc3545;
+  color: #fff;
+  padding: 14px 18px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+  margin-top: 15px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.35);
+  animation: shake 0.4s ease-in-out;
+}
+
+.login-error-box.show {
+  display: flex;
+}
+
+.login-error-box i {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+/*------------------------------------------------------------------
+[ Util ]*/
+
+.p-b-33 {
+    padding-bottom: 33px;
+}
+.m-t-20 {
+    margin-top: 20px;
+}
+.text-center {
+    text-align: center;
+}
+
+.p-b-5 {
+    padding-bottom: 5px;
+}
+.p-t-25 {
+    padding-top: 25px;
+}
+
+
+/*= Reset CSS 
+ ============= */
+html, body {border: 0; margin: 0; padding: 0;}
+body {font: 14px "Lato", Arial, sans-serif; min-width: 100%; min-height: 100%; color: #666;}
+.container{margin: 0 auto; max-width: 1200px;}
+*{margin: 0; padding: 0; box-sizing: border-box;}
+.row{float: left; width: 100%; padding: 20px 0 50px;}
+h2{text-align: center; color: #2079df; font-size: 28px; float: left; width: 100%; margin: 30px 0; position: relative; line-height: 58px; font-weight: 400;}
+h2:before{content: ""; position: absolute; left: 50%; bottom: 0; width: 100px; height: 2px; background-color: #2079df; margin-left: -50px;}
+/*= Reset CSS End
+ ================= */
+
+/*= input focus effects css
+ =========================== */
+:focus{outline: none;}
+
+.col-3{float: left; width: 27.33%; margin: 40px 3%; position: relative;} /* necessary to give position: relative to parent. */
+input[type="text"]{font: 15px/24px "Lato", Arial, sans-serif; color: #333; width: 100%; box-sizing: border-box; letter-spacing: 1px; position: relative; z-index: 5;}
+
+
+
+.effect-19{border: 1px solid #ccc; padding: 7px 14px; transition: background-color 0.4s; background: transparent;}
+
+.effect-19 ~ .focus-border:before,
+.effect-19 ~ .focus-border:after{content: ""; position: absolute; top: -1px; left: 50%; width: 0; height: 2px; background-color: #17ada0; transition: 0.4s;}
+.effect-19 ~ .focus-border:after{top: auto; bottom: 0;}
+.effect-19 ~ .focus-border i:before,
+.effect-19 ~ .focus-border i:after{content: ""; position: absolute; top: 50%; left: 0; width: 2px; height: 0; background-color: #17ada0; transition: 0.6s;}
+.effect-19 ~ .focus-border i:after{left: auto; right: 0;}
+.effect-19:focus ~ .focus-border:before,
+.effect-19:focus ~ .focus-border:after,
+.has-content.effect-19 ~ .focus-border:before,
+.has-content.effect-19 ~ .focus-border:after{left: 0; width: 100%; transition: 0.4s;}
+.effect-19:focus ~ .focus-border i:before,
+.effect-19:focus ~ .focus-border i:after,
+.has-content.effect-19 ~ .focus-border i:before,
+.has-content.effect-19 ~ .focus-border i:after{top: -1px; height: 100%; transition: 0.6s;}
+.effect-19 ~ label{position: absolute; left: 14px; width: 100%; top: 36%; color: #757575; transition: 0.3s; z-index: 0; letter-spacing: 0.5px;}
+.effect-19:focus ~ label, .has-content.effect-19 ~ label{top: -18px; left: 0; font-size: 14px; color: #0B847A; transition: 0.3s;}
+
+
+
+
+/*= input focus effects css End
+ =============================== */
+
+/* ===============Label effects================ */
+
+.has-content.input100 ~ label:after{transition: 0.3s; height: 100%; top:-18px;}
+
+
+@media screen and (max-width:500px) {
+  .wrap-login100 {
+    padding: 45px 5px 35px;
+  }                                  
+}

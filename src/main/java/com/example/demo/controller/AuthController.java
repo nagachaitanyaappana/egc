@@ -48,7 +48,8 @@ public class AuthController {
 
         // Set the token in a cookie so browser page navigation (clicks/links) is authenticated
         jakarta.servlet.http.Cookie cookie = new jakarta.servlet.http.Cookie("token", token);
-        cookie.setHttpOnly(false); // allow JS to read it if needed
+        cookie.setHttpOnly(true); // prevent XSS from stealing the token
+        cookie.setSecure(true);   // require HTTPS in production
         cookie.setPath("/");
         cookie.setMaxAge((int) (expirationMs / 1000));
         response.addCookie(cookie);

@@ -1,0 +1,141 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reports - ${mandal.name}</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/global.css">
+</head>
+<body>
+<div class="page-wrap">
+    <header class="app-header">
+        <div class="header-inner">
+            <div class="header-left"></div>
+            <div class="header-center">
+                <div class="brand-center">
+                    <div class="brand">EGC Admin</div>
+                    <div class="subtitle">Reports - <c:out value="${mandal.name}"/></div>
+                </div>
+                <ul class="nav-list">
+                    <li><a href="${pageContext.request.contextPath}/admin/dashboard">Home</a></li>
+                    <li><a href="${pageContext.request.contextPath}/admin/mandal/${mandal.id}/reports" class="active">Reports</a></li>
+                </ul>
+            </div>
+            <div class="header-right">
+                <a href="${pageContext.request.contextPath}/login" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="page-content container mt-4 mb-5">
+
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <div>
+                <h1 class="section-title">Mandal Reports</h1>
+                <p class="text-muted mb-0">
+                    <i class="bi bi-geo-alt"></i> <c:out value="${mandal.district}"/>
+                    <span class="ms-2" style="background:var(--primary); color:#fff; font-size:0.8rem; padding:0.35rem 0.6rem; border-radius:0.25rem; font-weight:500;">Total Villages: ${totalVillages}</span>
+                </p>
+            </div>
+            <a href="${pageContext.request.contextPath}/admin/mandal/${mandal.id}" class="btn btn-secondary btn-sm">&larr; Back to Villages</a>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-md-6">
+                <div class="stat-card stat-success" onclick="toggleTable('submittedTable')">
+                    <div class="stat-icon" style="color:#ffffff;"><i class="bi bi-check-circle-fill"></i></div>
+                    <div class="stat-value">${submittedCount}</div>
+                    <div class="stat-label">Villages Submitted</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="stat-card stat-danger" onclick="toggleTable('pendingTable')">
+                    <div class="stat-icon" style="color:#ffffff;"><i class="bi bi-exclamation-circle-fill"></i></div>
+                    <div class="stat-value">${pendingCount}</div>
+                    <div class="stat-label">Pending Villages</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="submittedTable" class="detail-table">
+            <div class="card form-card mb-3">
+                <div class="card-body">
+                    <h5 class="section-title"><i class="bi bi-check-circle-fill" style="color:#065f46;"></i> Submitted Villages</h5>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Village Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach var="village" items="${submitted}" varStatus="loop">
+                                    <tr>
+                                        <td>${loop.index + 1}</td>
+                                        <td><c:out value="${village.name}"/></td>
+                                    </tr>
+                                </c:forEach>
+                                <c:if test="${empty submitted}">
+                                    <tr>
+                                        <td colspan="2" class="text-center">No villages have submitted yet.</td>
+                                    </tr>
+                                </c:if>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="pendingTable" class="detail-table">
+            <div class="card form-card mb-3">
+                <div class="card-body">
+                    <h5 class="section-title"><i class="bi bi-exclamation-circle-fill" style="color:#991b1b;"></i> Pending Villages</h5>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Village Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach var="village" items="${notSubmitted}" varStatus="loop">
+                                    <tr>
+                                        <td>${loop.index + 1}</td>
+                                        <td><c:out value="${village.name}"/></td>
+                                    </tr>
+                                </c:forEach>
+                                <c:if test="${empty notSubmitted}">
+                                    <tr>
+                                        <td colspan="2" class="text-center">All villages have submitted.</td>
+                                    </tr>
+                                </c:if>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="app-footer" style="background:var(--accent); color:rgba(255,255,255,0.85); padding:1.2rem 0; text-align:center; font-size:0.85rem;">
+        &copy; 2025 EGC Administration. Government of Andhra Pradesh. All rights reserved.
+    </footer>
+</div>
+
+<script>
+    function toggleTable(tableId) {
+        const table = document.getElementById(tableId);
+        table.classList.toggle('active');
+    }
+</script>
+</body>
+</html>

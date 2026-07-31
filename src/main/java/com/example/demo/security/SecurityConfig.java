@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 @EnableMethodSecurity
@@ -43,7 +44,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/", "/login").permitAll()
                 .requestMatchers("/forgot-password", "/reset-password").permitAll()
-                .requestMatchers("/css/**", "/js/**", "/uploads/**").permitAll()
+                .requestMatchers("/css/**", "/js/**", "/resources/**").permitAll()
                 .requestMatchers("/WEB-INF/**").permitAll()
                 .anyRequest().authenticated()
             )

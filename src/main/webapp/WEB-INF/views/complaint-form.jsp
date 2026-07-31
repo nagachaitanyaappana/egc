@@ -5,223 +5,79 @@
 <head>
     <title>Submit Complaint - Village</title>
     <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet"/>
-    <style>
-        :root {
-            --gov-navy: #0d2b5e;
-            --gov-blue: #1a4d8f;
-            --gov-light: #f4f6fa;
-            --gov-border: #dce3f0;
-        }
-        body {
-            background-color: var(--gov-light);
-            font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        }
-        .gov-header {
-            background: linear-gradient(90deg, var(--gov-navy), var(--gov-blue));
-            color: white;
-            padding: 1.2rem 0;
-            border-bottom: 4px solid #f1c40f;
-        }
-        .gov-header .site-title {
-            font-weight: 700;
-            font-size: 1.35rem;
-            margin: 0;
-        }
-        .gov-header .site-subtitle {
-            font-size: 0.9rem;
-            opacity: 0.9;
-            margin: 0;
-        }
-        .complaint-container {
-            max-width: 900px;
-            margin: auto;
-            padding: 2rem;
-        }
-        .large-textarea {
-            width: 100%;
-            height: 150px;
-            resize: vertical;
-            border: 1px solid var(--gov-border);
-        }
-        .large-textarea:focus {
-            border-color: var(--gov-blue);
-            box-shadow: 0 0 0 0.2rem rgba(26,77,143,.25);
-        }
-        .gov-card {
-            border: 4px solid #1a4d8f !important;
-            border-radius: 0 !important;
-            transition: transform .2s ease, box-shadow .2s ease !important;
-            background: white !important;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
-        }
-        .gov-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(13,43,94,.15);
-        }
-        .gov-card-body {
-            padding: 1.5rem 2rem;
-        }
-        .preview-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 0.75rem;
-            margin-top: 0.5rem;
-        }
-        .preview-item {
-            position: relative;
-            width: 100%;
-            padding-top: 100%;
-            border: 1px solid var(--gov-border);
-            border-radius: 0.375rem;
-            overflow: hidden;
-            background: #fff;
-            cursor: pointer;
-        }
-        .preview-item img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .preview-item .remove-btn {
-            position: absolute;
-            top: 4px;
-            right: 4px;
-            background: #dc3545;
-            color: #fff;
-            border: none;
-            border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            line-height: 18px;
-            text-align: center;
-            font-size: 14px;
-            cursor: pointer;
-            padding: 0;
-        }
-        .lightbox {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.85);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-        }
-        .lightbox.active { display: flex; }
-        .lightbox img {
-            max-width: 90%;
-            max-height: 90%;
-            border-radius: 4px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-        }
-        .lightbox-close {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            color: #fff;
-            font-size: 40px;
-            font-weight: bold;
-            cursor: pointer;
-            line-height: 1;
-        }
-        .gov-footer {
-            background: var(--gov-navy);
-            color: rgba(255,255,255,.85);
-            padding: 1rem 0;
-            margin-top: 2rem;
-            font-size: 0.85rem;
-        }
-        .form-label {
-            font-weight: 600;
-            color: var(--gov-navy);
-        }
-        .btn-primary {
-            background: var(--gov-blue);
-            border-color: var(--gov-blue);
-        }
-        .btn-primary:hover {
-            background: var(--gov-navy);
-            border-color: var(--gov-navy);
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/global.css">
 </head>
 <body>
-<header class="gov-header">
-    <div class="container d-flex justify-content-between align-items-center">
-        <div>
-            <div class="site-title">East Godavari District Administration</div>
-            <div class="site-subtitle">Public Complaint Submission Portal</div>
-        </div>
-        <a href="${pageContext.request.contextPath}/login" class="btn btn-outline-light btn-sm">
-            <i class="bi bi-box-arrow-right"></i> Logout
-        </a>
-    </div>
-</header>
-
-<div class="container complaint-container">
-    <div class="row mb-3">
-        <div class="col-12">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/login">Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Submit Complaint</li>
-                </ol>
-            </nav>
-        </div>
-    </div>
-
-    <div class="gov-card mb-4">
-        <div class="gov-card-body">
-            <h2 class="mb-3" style="font-weight:700; color:var(--gov-navy);">
-                <i class="bi bi-file-earmark-text"></i> Submit Your Complaint
-            </h2>
-
-            <div id="formAlert"></div>
-
-            <form id="complaintForm">
-                <div class="row g-3">
-                    <div class="col-12">
-                        <div class="mb-3">
-                            <label for="complaintContent" class="form-label">Complaint Details</label>
-                            <textarea class="form-control large-textarea" id="complaintContent" name="complaintContent"></textarea>
-                        </div>
-                    </div>
-
-                    <div class="col-12">
-                        <div class="mb-3">
-                            <label for="photos" class="form-label">Upload Supporting Photos (multiple)</label>
-                            <input type="file" class="form-control" id="photos" name="photos" multiple accept="image/*"/>
-                        </div>
-                        <div class="preview-grid" id="previewGrid"></div>
-                    </div>
-
-                    <div class="col-12 d-grid">
-                        <button type="submit" class="btn btn-primary">Submit Complaint</button>
-                    </div>
+<div class="page-wrap">
+    <header class="app-header">
+        <div class="header-inner">
+            <div class="header-left"></div>
+            <div class="header-center">
+                <div class="brand-center">
+                    <div class="brand">EGC Admin</div>
+                    <div class="subtitle">Public Complaint Submission Portal</div>
                 </div>
-            </form>
+                <ul class="nav-list">
+                    <li><a href="${pageContext.request.contextPath}/complaint" class="active">Complaint</a></li>
+                </ul>
+            </div>
+            <div class="header-right">
+                <a href="${pageContext.request.contextPath}/login" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="page-content container mt-4 mb-5">
+
+        <div class="card form-card mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="section-title"><i class="bi bi-file-earmark-text"></i> Submit Your Complaint</h2>
+                    <a href="${pageContext.request.contextPath}/login" class="btn btn-secondary btn-sm">&larr; Back</a>
+                </div>
+
+                <div id="formAlert"></div>
+
+                <form id="complaintForm">
+                    <div class="complaint-split">
+                        <div class="left-panel">
+                            <label for="complaintContent">Complaint Details</label>
+                            <textarea id="complaintContent" placeholder="Write your complaint here..." style="min-height: 220px;"></textarea>
+                        </div>
+                        <div class="right-panel">
+                            <div class="upload-zone">
+                                <i class="bi bi-cloud-upload" style="font-size: 32px; color: var(--text-secondary);"></i>
+                                <div class="small text-muted mt-2">Upload Photos</div>
+                                <input type="file" class="form-control form-control-sm mt-2" id="photos" name="photos" multiple accept="image/*"/>
+                            </div>
+                            <div class="preview-grid mt-2" id="previewGrid"></div>
+                        </div>
+                    </div>
+
+                    <div class="mt-3 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send"></i> Submit Complaint
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="lightbox" id="lightbox" onclick="closeLightbox()">
-    <span class="lightbox-close">&times;</span>
-    <img id="lightboxImg" src="" alt="Full size"/>
-</div>
-
-<footer class="gov-footer">
-    <div class="container text-center">
-        &copy; 2025 East Godavari District Administration. Government of Andhra Pradesh. All rights reserved.
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close">&times;</span>
+        <img id="lightboxImg" src="" alt="Full size"/>
     </div>
-</footer>
+
+    <footer class="app-footer" style="background:var(--accent); color:rgba(255,255,255,0.85); padding:1.2rem 0; text-align:center; font-size:0.85rem;">
+        &copy; 2025 EGC Administration. Government of Andhra Pradesh. All rights reserved.
+    </footer>
+</div>
 
 <script>
     const fileInput = document.getElementById('photos');
@@ -251,16 +107,19 @@
 
             const wrapper = document.createElement('div');
             wrapper.className = 'preview-item';
+            wrapper.style.cssText = 'position:relative; display:inline-block;';
 
             const img = document.createElement('img');
             img.src = url;
             img.alt = file.name;
+            img.style.cssText = 'width:80px; height:80px; object-fit:cover; border:1px solid var(--border); border-radius:0.5rem;';
 
             const btn = document.createElement('button');
             btn.type = 'button';
             btn.className = 'remove-btn';
             btn.innerHTML = '&times;';
             btn.title = 'Remove';
+            btn.style.cssText = 'position:absolute; top:-6px; right:-6px; background:var(--danger); color:#fff; border:none; border-radius:50%; width:20px; height:20px; line-height:1; cursor:pointer;';
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -292,8 +151,28 @@
         lightbox.classList.remove('active');
     }
 
+    // Read the CSRF token from the cookie set by Spring Security's CookieCsrfTokenRepository
+    function getCsrfToken() {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const parts = cookies[i].trim().split('=');
+            if (parts[0] === '_csrf') {
+                return decodeURIComponent(parts[1]);
+            }
+        }
+        return null;
+    }
+
+    const ctx = "${pageContext.request.contextPath}";
+    const jwt = localStorage.getItem("jwt");
+
     form.addEventListener('submit', function (e) {
         e.preventDefault();
+
+        if (!jwt) {
+            formAlert.innerHTML = '<div class="alert alert-danger">Session expired. Please log in again.</div>';
+            return;
+        }
 
         const complaintContent = document.getElementById('complaintContent').value.trim();
         if (!complaintContent) {
@@ -311,12 +190,28 @@
         formData.append('complaintContent', complaintContent);
         filesToSubmit.forEach(file => formData.append('photos', file));
 
-        fetch('${pageContext.request.contextPath}/complaint', {
+        const headers = {};
+        headers['Authorization'] = 'Bearer ' + jwt;
+
+        const csrfToken = getCsrfToken();
+        if (csrfToken) {
+            headers['X-CSRF-TOKEN'] = csrfToken;
+        }
+
+        fetch(ctx + '/complaint', {
             method: 'POST',
+            headers: headers,
             body: formData,
             credentials: 'same-origin'
         })
-        .then(res => res.text())
+        .then(res => {
+            if (!res.ok) {
+                return res.text().then(text => {
+                    throw new Error(text || 'Submission failed');
+                });
+            }
+            return res.text();
+        })
         .then(html => {
             formAlert.innerHTML = '<div class="alert alert-success">Complaint submitted successfully!</div>';
             form.reset();
@@ -326,7 +221,7 @@
         })
         .catch(err => {
             console.error(err);
-            formAlert.innerHTML = '<div class="alert alert-danger">Submission failed. Please try again.</div>';
+            formAlert.innerHTML = '<div class="alert alert-danger">' + (err.message || 'Submission failed. Please try again.') + '</div>';
         });
     });
 </script>

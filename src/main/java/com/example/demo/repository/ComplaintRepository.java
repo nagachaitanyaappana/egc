@@ -15,4 +15,7 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
 
     @Query("SELECT COUNT(c) FROM Complaint c WHERE c.user.village = :village")
     long countByUserVillage(@Param("village") Village village);
+
+    @Query("SELECT COUNT(c) FROM Complaint c")
+    long countAll();
 }

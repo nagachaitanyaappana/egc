@@ -9,15 +9,19 @@ public class Photo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String filePath;
+    @Column(columnDefinition = "bytea")
+    private byte[] data;
+
+    private String contentType;
 
     @ManyToOne
     private Complaint complaint;
 
     public Photo() {}
 
-    public Photo(String filePath, Complaint complaint) {
-        this.filePath = filePath;
+    public Photo(byte[] data, String contentType, Complaint complaint) {
+        this.data = data;
+        this.contentType = contentType;
         this.complaint = complaint;
     }
 
@@ -29,12 +33,20 @@ public class Photo {
         this.id = id;
     }
 
-    public String getFilePath() {
-        return filePath;
+    public byte[] getData() {
+        return data;
     }
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
+    public void setData(byte[] data) {
+        this.data = data;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
 
     public Complaint getComplaint() {
