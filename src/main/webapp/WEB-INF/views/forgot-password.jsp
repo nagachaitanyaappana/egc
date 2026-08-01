@@ -6,10 +6,50 @@
     <title>Forgot Password</title>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Expires" content="0"/>
     <link href="${pageContext.request.contextPath}/resources/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="${pageContext.request.contextPath}/resources/css/bootstrap-icons.css" rel="stylesheet"/>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/main.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/global.css">
+    <style>
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            line-height: 0;
+        }
+        .toggle-password svg {
+            width: 20px;
+            height: 20px;
+            display: block;
+        }
+        .toggle-password svg {
+            pointer-events: none;
+        }
+        .wrap-input100 input.input100 {
+            position: static !important;
+            z-index: auto !important;
+        }
+        .toggle-password .eye-slash {
+            display: none;
+        }
+        .toggle-password.showing .eye-slash {
+            display: inline;
+        }
+    </style>
 </head>
 <body>
 <div class="limiter">
@@ -62,19 +102,27 @@
                         <span class="focus-border"><i></i></span>
                     </div>
                     <div class="wrap-input100 position-relative">
-                        <input class="effect-19 input100" id="newPassword" type="password" name="newPassword" placeholder=" " required>
+                        <input class="effect-19 input100" id="newPassword" type="text" name="newPassword" placeholder=" " required>
                         <label for="newPassword">New Password</label>
                         <span class="focus-border"><i></i></span>
-                        <button type="button" class="toggle-password" data-target="newPassword" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:#0d6efd; border:none; cursor:pointer; padding:8px; border-radius:6px; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 6px rgba(13,110,253,0.4);">
-                            <i class="bi bi-eye" id="newPasswordIcon" style="color:#fff; font-size:16px;"></i>
+                        <button type="button" class="toggle-password" data-target="newPassword" onmousedown="return false;">
+                            <svg width="20" height="20" viewBox="0 0 16 16" fill="#0d6efd">
+                                <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                                <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                                <line class="eye-slash" x1="2" y1="14" x2="14" y2="2" stroke="#0d6efd" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
                         </button>
                     </div>
                     <div class="wrap-input100 position-relative">
-                        <input class="effect-19 input100" id="confirmPassword" type="password" name="confirmPassword" placeholder=" " required>
+                        <input class="effect-19 input100" id="confirmPassword" type="text" name="confirmPassword" placeholder=" " required>
                         <label for="confirmPassword">Confirm New Password</label>
                         <span class="focus-border"><i></i></span>
-                        <button type="button" class="toggle-password" data-target="confirmPassword" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:#0d6efd; border:none; cursor:pointer; padding:8px; border-radius:6px; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 6px rgba(13,110,253,0.4);">
-                            <i class="bi bi-eye" id="confirmPasswordIcon" style="color:#fff; font-size:16px;"></i>
+                        <button type="button" class="toggle-password" data-target="confirmPassword" onmousedown="return false;">
+                            <svg width="20" height="20" viewBox="0 0 16 16" fill="#0d6efd">
+                                <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                                <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                                <line class="eye-slash" x1="2" y1="14" x2="14" y2="2" stroke="#0d6efd" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
                         </button>
                     </div>
                     <button type="submit" class="login100-form-btn">Reset Password</button>
@@ -90,7 +138,7 @@
 
 <script src="${pageContext.request.contextPath}/resources/js/jquery.min.js"></script>
 <script>
-    $(window).ready(function(){
+    $(document).ready(function(){
         $(".wrap-input100 .input100").focusout(function() {
             if($(this).val() != "") {
                 $(this).addClass("has-content");
@@ -98,29 +146,28 @@
             else {
                 $(this).removeClass("has-content");
             }
-        })
-    });
-
-    function shakeAlert() {
-        $('.alert-danger').each(function() {
-            $(this).css({
-                'animation': 'shake 0.4s ease-in-out'
-            });
         });
-    }
-    shakeAlert();
 
-    $('.toggle-password').on('click', function() {
-        var targetId = $(this).data('target');
-        var input = $('#' + targetId);
-        var icon = $('#' + targetId + 'Icon');
-        if (input.attr('type') === 'password') {
-            input.attr('type', 'text');
-            icon.removeClass('bi-eye').addClass('bi-eye-slash');
-        } else {
-            input.attr('type', 'password');
-            icon.removeClass('bi-eye-slash').addClass('bi-eye');
+        function shakeAlert() {
+            $('.alert-danger').each(function() {
+                $(this).css({
+                    'animation': 'shake 0.4s ease-in-out'
+                });
+            });
         }
+        shakeAlert();
+
+        $('.toggle-password').on('click', function() {
+            var targetId = $(this).data('target');
+            var input = $('#' + targetId);
+            if (input.attr('type') === 'text') {
+                input.attr('type', 'password');
+                $(this).addClass('showing');
+            } else {
+                input.attr('type', 'text');
+                $(this).removeClass('showing');
+            }
+        });
     });
 </script>
 </body>

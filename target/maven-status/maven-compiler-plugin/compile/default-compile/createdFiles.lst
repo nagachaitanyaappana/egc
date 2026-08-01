@@ -4,6 +4,7 @@ com/example/demo/repository/PhotoRepository.class
 com/example/demo/security/SecurityConfig.class
 com/example/demo/security/JwtUtil.class
 com/example/demo/DemoApplication.class
+com/example/demo/controller/AuthController$LoginRequest.class
 com/example/demo/controller/HomeController.class
 com/example/demo/config/DataLoader.class
 com/example/demo/model/User.class
@@ -23,3 +24,4 @@ com/example/demo/security/JwtAuthenticationFilter.class
 com/example/demo/repository/ComplaintRepository.class
 com/example/demo/controller/PasswordResetController.class
 com/example/demo/model/Photo.class
+com/example/demo/controller/AuthController.class
