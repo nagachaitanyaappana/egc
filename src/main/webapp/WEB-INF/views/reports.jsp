@@ -6,8 +6,8 @@
     <title>Overall Reports</title>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/css/bootstrap-icons.css" rel="stylesheet"/>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/global.css">
 </head>
 <body>
@@ -37,15 +37,15 @@
 
         <h1 class="section-title mb-4">Overall Reports</h1>
 
-        <div class="row g-4 mb-4">
-            <div class="col-md-6">
+        <div class="row g-4 mb-4" style="display:flex; flex-wrap:wrap;">
+            <div class="col-6">
                 <div class="stat-card stat-success" onclick="toggleTable('submittedTable')">
                     <div class="stat-icon" style="color:#ffffff;"><i class="bi bi-check-circle-fill"></i></div>
                     <div class="stat-value">${submittedVillages}</div>
                     <div class="stat-label">Total Villages Submitted</div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-6">
                 <div class="stat-card stat-danger" onclick="toggleTable('pendingTable')">
                     <div class="stat-icon" style="color:#ffffff;"><i class="bi bi-exclamation-circle-fill"></i></div>
                     <div class="stat-value">${pendingVillages}</div>

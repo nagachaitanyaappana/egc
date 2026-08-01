@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.security.JwtUtil;
+import com.example.demo.security.TokenBlacklist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,9 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private TokenBlacklist tokenBlacklist;
+
     @Value("${jwt.expiration-ms:900000}")
     private long expirationMs;
 
@@ -46,10 +50,9 @@ public class AuthController {
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
         String token = jwtUtil.generateToken(userDetails);
 
-        // Set the token in a cookie so browser page navigation (clicks/links) is authenticated
         jakarta.servlet.http.Cookie cookie = new jakarta.servlet.http.Cookie("token", token);
-        cookie.setHttpOnly(true); // prevent XSS from stealing the token
-        cookie.setSecure(true);   // require HTTPS in production
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
         cookie.setPath("/");
         cookie.setMaxAge((int) (expirationMs / 1000));
         response.addCookie(cookie);
@@ -58,6 +61,29 @@ public class AuthController {
                 "token", token,
                 "type", "Bearer"
         ));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Map<String, String>> logout(@RequestHeader(value = "Authorization", required = false) String authHeader,
+                                                      HttpServletResponse response) {
+        String token = null;
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            token = authHeader.substring(7);
+        }
+
+        if (token != null && !token.isBlank()) {
+            long expiry = System.currentTimeMillis() + 86400000;
+            tokenBlacklist.revoke(token, expiry);
+        }
+
+        jakarta.servlet.http.Cookie cookie = new jakarta.servlet.http.Cookie("token", null);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok(Map.of("message", "Logged out successfully"));
     }
 
     public static class LoginRequest {

@@ -21,4 +21,5 @@
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/security/JwtAuthenticationFilter.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/security/JwtUtil.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/security/SecurityConfig.java
+/home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/security/TokenBlacklist.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/service/FileStorageService.java

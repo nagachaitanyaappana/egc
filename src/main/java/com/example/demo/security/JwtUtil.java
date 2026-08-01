@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.util.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,12 @@ public class JwtUtil {
     @Value("${jwt.expiration-ms:900000}")
     private long expirationMs;
 
+    private final TokenBlacklist tokenBlacklist;
+
+    public JwtUtil(TokenBlacklist tokenBlacklist) {
+        this.tokenBlacklist = tokenBlacklist;
+    }
+
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
@@ -34,6 +41,16 @@ public class JwtUtil {
 
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
+    }
+
+    public <T> T extractClaim(String token, String claimKey, Class<T> clazz) {
+        Claims claims = extractAllClaims(token);
+        Object claim = claims.get(claimKey);
+        return clazz.cast(claim);
+    }
+
+    public String extractJti(String token) {
+        return extractClaim(token, "jti", String.class);
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -67,14 +84,23 @@ public class JwtUtil {
                 .map(authority -> authority.getAuthority())
                 .collect(Collectors.toList());
 
-        Map<String, Object> claims = Map.of("roles", roles);
+        String token;
+        long expiryTime = System.currentTimeMillis() + expirationMs;
 
-        return Jwts.builder()
-                .claims(claims)
-                .subject(userDetails.getUsername())
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + expirationMs))
-                .signWith(getSigningKey())
-                .compact();
+        do {
+            String jti = UUID.randomUUID().toString();
+            Map<String, Object> claims = Map.of("roles", roles, "jti", jti);
+
+            token = Jwts.builder()
+                    .claims(claims)
+                    .subject(userDetails.getUsername())
+                    .issuedAt(new Date(System.currentTimeMillis()))
+                    .expiration(new Date(expiryTime))
+                    .signWith(getSigningKey())
+                    .compact();
+        } while (tokenBlacklist.isRevoked(token) || tokenBlacklist.isActive(token));
+
+        tokenBlacklist.activate(token, expiryTime);
+        return token;
     }
 }

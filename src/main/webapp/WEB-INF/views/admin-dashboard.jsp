@@ -6,8 +6,8 @@
     <title>Mandal Wise Reports</title>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/css/bootstrap-icons.css" rel="stylesheet"/>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/global.css">
 </head>
 <body>
@@ -26,9 +26,11 @@
                 </ul>
             </div>
             <div class="header-right">
-                <a href="${pageContext.request.contextPath}/login" class="btn btn-outline-light btn-sm">
-                    <i class="bi bi-box-arrow-right"></i> Logout
-                </a>
+                <form method="post" action="${pageContext.request.contextPath}/api/auth/logout" style="display:inline;">
+                    <button type="submit" class="btn btn-outline-light btn-sm">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </button>
+                </form>
             </div>
         </div>
     </header>
@@ -45,11 +47,11 @@
             </div>
         </div>
 
-        <div class="row g-3">
+        <div class="row g-3" style="display:flex; flex-wrap:wrap;">
             <c:forEach var="mandal" items="${mandals}" varStatus="loop">
                 <div class="col-md-3 col-sm-4 col-6">
-                <a href="${pageContext.request.contextPath}/admin/mandal/${mandal.id}" class="text-decoration-none">
-                    <div class="stat-card stat-color-${loop.index % 20}">
+                <a href="${pageContext.request.contextPath}/admin/mandal/${mandal.id}" class="text-decoration-none d-block">
+                     <div class="stat-card stat-color-${loop.index % 20}">
                         <div class="stat-value">${loop.index + 1}</div>
                         <div class="stat-label">
                             <c:out value="${mandal.name}"/>
