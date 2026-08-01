@@ -638,6 +638,49 @@ input[type="checkbox"] {
     animation: shake 0.4s ease-in-out;
 }
 
+/* Styled page alerts matching login error box aesthetic */
+.page-alert {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.4;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    animation: shake 0.4s ease-in-out;
+}
+
+.page-alert.show {
+    display: flex;
+}
+
+.page-alert i {
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.page-alert-error {
+    background-color: #dc3545;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.35);
+}
+
+.page-alert-success {
+    background-color: #198754;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(25, 135, 84, 0.35);
+}
+
+.page-alert-info {
+    background-color: #0dcaf0;
+    color: #000;
+    box-shadow: 0 4px 12px rgba(13, 202, 240, 0.35);
+}
+
 /* Animated input focus — border draw effect (matching login form) */
 .form-control {
     position: relative;

@@ -33,10 +33,16 @@
     <h2>Reset Password</h2>
 
     <c:if test="${param.resetSuccess != null}">
-        <div class="alert alert-success">Your password has been reset. Please log in.</div>
+        <div class="page-alert page-alert-success show">
+            <i class="bi bi-check-circle-fill"></i>
+            <span>Your password has been reset. Please log in.</span>
+        </div>
     </c:if>
     <c:if test="${error != null}">
-        <div class="alert alert-danger">${error}</div>
+        <div class="page-alert page-alert-error show">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span>${error}</span>
+        </div>
     </c:if>
 
     <form action="${pageContext.request.contextPath}/reset-password" method="post">

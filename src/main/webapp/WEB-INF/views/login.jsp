@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,6 +18,12 @@
                 <span class="login100-form-title">
                     EGC Administration
                 </span>
+
+                <c:if test="${param.logoutSuccess == 'true'}">
+                    <div class="login-success-box show" style="margin-bottom: 1rem;">
+                        <i class="bi bi-check-circle-fill"></i> Logged out successfully
+                    </div>
+                </c:if>
 
                 <div id="errorBox" class="login-error-box" role="alert">
                     <i class="bi bi-exclamation-triangle-fill"></i>
@@ -133,6 +141,15 @@
             }
         } catch (e) {}
         window.location.replace(landing);
+    })();
+
+    (function cleanLogoutParam() {
+        const params = new URLSearchParams(window.location.search);
+        if (params.has("logoutSuccess")) {
+            params.delete("logoutSuccess");
+            const newUrl = window.location.pathname + (params.toString() ? "?" + params.toString() : "");
+            window.history.replaceState({}, "", newUrl);
+        }
     })();
 </script>
 </body>

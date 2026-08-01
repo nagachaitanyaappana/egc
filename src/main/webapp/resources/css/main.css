@@ -388,6 +388,32 @@ input.input100 {
   flex-shrink: 0;
 }
 
+.login-success-box {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  background-color: #198754;
+  color: #fff;
+  padding: 14px 18px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+  margin-top: 15px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 12px rgba(25, 135, 84, 0.35);
+  animation: shake 0.4s ease-in-out;
+}
+
+.login-success-box.show {
+  display: flex;
+}
+
+.login-success-box i {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
   20% { transform: translateX(-6px); }

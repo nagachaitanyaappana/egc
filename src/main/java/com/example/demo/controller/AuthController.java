@@ -11,13 +11,15 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Map;
 
-@RestController
+@Controller
 @RequestMapping("/api/auth")
 public class AuthController {
 
@@ -37,6 +39,7 @@ public class AuthController {
     private long expirationMs;
 
     @PostMapping("/login")
+    @ResponseBody
     public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest request,
                                                      HttpServletResponse response) {
         try {
@@ -64,8 +67,8 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Map<String, String>> logout(@RequestHeader(value = "Authorization", required = false) String authHeader,
-                                                      HttpServletResponse response) {
+    public String logout(@RequestHeader(value = "Authorization", required = false) String authHeader,
+                         HttpServletResponse response) {
         String token = null;
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
@@ -83,7 +86,7 @@ public class AuthController {
         cookie.setMaxAge(0);
         response.addCookie(cookie);
 
-        return ResponseEntity.ok(Map.of("message", "Logged out successfully"));
+        return "redirect:/login?logoutSuccess=true";
     }
 
     public static class LoginRequest {

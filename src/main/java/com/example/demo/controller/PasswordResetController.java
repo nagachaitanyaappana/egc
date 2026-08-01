@@ -44,8 +44,17 @@ public class PasswordResetController {
     }
 
     @PostMapping("/forgot-password")
-    public String submitForgotPassword(@RequestParam String email, Model model) {
-        Optional<User> userOpt = userRepository.findByEmail(email);
+    public String submitForgotPassword(@RequestParam String loginIdentifier, Model model) {
+        Optional<User> userOpt = Optional.empty();
+
+        if (loginIdentifier != null && !loginIdentifier.isBlank()) {
+            String identifier = loginIdentifier.trim();
+            if (identifier.contains("@")) {
+                userOpt = userRepository.findByEmail(identifier);
+            } else {
+                userOpt = userRepository.findByUsername(identifier);
+            }
+        }
 
         if (userOpt.isPresent()) {
             User user = userOpt.get();

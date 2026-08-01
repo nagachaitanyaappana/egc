@@ -170,19 +170,19 @@
         e.preventDefault();
 
         if (!jwt) {
-            formAlert.innerHTML = '<div class="alert alert-danger">Session expired. Please log in again.</div>';
+            formAlert.innerHTML = '<div class="page-alert page-alert-error show"><i class="bi bi-exclamation-triangle-fill"></i><span>Session expired. Please log in again.</span></div>';
             return;
         }
 
         const complaintContent = document.getElementById('complaintContent').value.trim();
         if (!complaintContent) {
-            formAlert.innerHTML = '<div class="alert alert-danger">Please enter complaint details.</div>';
+            formAlert.innerHTML = '<div class="page-alert page-alert-error show"><i class="bi bi-exclamation-triangle-fill"></i><span>Please enter complaint details.</span></div>';
             return;
         }
 
         const filesToSubmit = selectedFiles.length > 0 ? selectedFiles : Array.from(fileInput.files);
         if (filesToSubmit.length === 0) {
-            formAlert.innerHTML = '<div class="alert alert-danger">Please select at least one photo.</div>';
+            formAlert.innerHTML = '<div class="page-alert page-alert-error show"><i class="bi bi-exclamation-triangle-fill"></i><span>Please select at least one photo.</span></div>';
             return;
         }
 
@@ -213,7 +213,7 @@
             return res.text();
         })
         .then(html => {
-            formAlert.innerHTML = '<div class="alert alert-success">Complaint submitted successfully!</div>';
+            formAlert.innerHTML = '<div class="page-alert page-alert-success show"><i class="bi bi-check-circle-fill"></i><span>Complaint submitted successfully!</span></div>';
             form.reset();
             selectedFiles = [];
             previewGrid.innerHTML = '';
@@ -221,7 +221,7 @@
         })
         .catch(err => {
             console.error(err);
-            formAlert.innerHTML = '<div class="alert alert-danger">' + (err.message || 'Submission failed. Please try again.') + '</div>';
+            formAlert.innerHTML = '<div class="page-alert page-alert-error show"><i class="bi bi-exclamation-triangle-fill"></i><span>' + (err.message || 'Submission failed. Please try again.') + '</span></div>';
         });
     });
 </script>

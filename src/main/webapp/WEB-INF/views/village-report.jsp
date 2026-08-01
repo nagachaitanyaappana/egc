@@ -84,7 +84,7 @@
         </c:forEach>
 
         <c:if test="${empty complaints}">
-            <div class="alert alert-info">No submissions yet.</div>
+            <div class="page-alert page-alert-info show">No submissions yet.</div>
         </c:if>
     </div>
 

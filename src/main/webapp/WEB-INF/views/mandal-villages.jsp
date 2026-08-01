@@ -52,7 +52,7 @@
                 <h3 class="section-title"><i class="bi bi-check-circle-fill" style="color:#198754;"></i> Submitted Villages</h3>
                 <c:choose>
                     <c:when test="${empty submitted}">
-                        <div class="alert alert-info">No villages have submitted yet.</div>
+                        <div class="page-alert page-alert-error show">No villages have submitted yet.</div>
                     </c:when>
                     <c:otherwise>
                         <div class="row g-3" style="display:flex; flex-wrap:wrap;">
@@ -78,7 +78,7 @@
                 <h3 class="section-title"><i class="bi bi-exclamation-circle-fill" style="color:#f59f00;"></i> Not Submitted Villages</h3>
                 <c:choose>
                     <c:when test="${empty notSubmitted}">
-                        <div class="alert alert-success">All villages have submitted.</div>
+                        <div class="page-alert page-alert-success show">All villages have submitted.</div>
                     </c:when>
                     <c:otherwise>
                         <div class="row g-3">

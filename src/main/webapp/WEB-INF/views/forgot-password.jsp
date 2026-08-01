@@ -18,30 +18,40 @@
             <div class="login-title">EGC Administration</div>
 
             <c:if test="${notFound != null}">
-                <div class="alert alert-danger shake">No account found with that email address.</div>
-            </c:if>
-
-            <c:if test="${otpSent != null}">
-                <div class="alert alert-success">
-                    <p class="mb-1">A verification code has been sent to <strong>${email}</strong></p>
-                    <p class="mb-0 small mt-1">Please check your email and enter the code below.</p>
+                <div class="page-alert page-alert-error show">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span>No account found with that username or email.</span>
                 </div>
             </c:if>
 
-            <%-- Step 1: request OTP — posts to /forgot-password --%>
+            <c:if test="${otpSent != null}">
+                <div class="page-alert page-alert-success show">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>A verification code has been sent to <strong>${maskedEmail}</strong>. Please check your email and enter the code below.</span>
+                </div>
+            </c:if>
+
+            <c:if test="${error != null}">
+                <div class="page-alert page-alert-error show">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span>${error}</span>
+                </div>
+            </c:if>
+
+            <%-- Step 1: request OTP --%>
             <c:if test="${step2 == null}">
                 <form action="${pageContext.request.contextPath}/forgot-password" method="post">
                     <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                     <div class="wrap-input100">
-                        <input class="effect-19 input100" id="email" type="email" name="email" placeholder=" " required autofocus>
-                        <label for="email">Email Address</label>
+                        <input class="effect-19 input100" id="loginIdentifier" type="text" name="loginIdentifier" placeholder=" " required autofocus>
+                        <label for="loginIdentifier">Username or Email</label>
                         <span class="focus-border"><i></i></span>
                     </div>
                     <button type="submit" class="login100-form-btn">Send Verification Code</button>
                 </form>
             </c:if>
 
-            <%-- Step 2: enter OTP + new password — posts to /reset-password --%>
+            <%-- Step 2: enter OTP + new password --%>
             <c:if test="${step2 != null}">
                 <form action="${pageContext.request.contextPath}/reset-password" method="post">
                     <input type="hidden" name="_csrf" value="${_csrf.token}"/>
@@ -51,15 +61,21 @@
                         <label for="otp">Verification Code</label>
                         <span class="focus-border"><i></i></span>
                     </div>
-                    <div class="wrap-input100">
+                    <div class="wrap-input100 position-relative">
                         <input class="effect-19 input100" id="newPassword" type="password" name="newPassword" placeholder=" " required>
                         <label for="newPassword">New Password</label>
                         <span class="focus-border"><i></i></span>
+                        <button type="button" class="toggle-password" data-target="newPassword" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:#0d6efd; border:none; cursor:pointer; padding:8px; border-radius:6px; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 6px rgba(13,110,253,0.4);">
+                            <i class="bi bi-eye" id="newPasswordIcon" style="color:#fff; font-size:16px;"></i>
+                        </button>
                     </div>
-                    <div class="wrap-input100">
+                    <div class="wrap-input100 position-relative">
                         <input class="effect-19 input100" id="confirmPassword" type="password" name="confirmPassword" placeholder=" " required>
                         <label for="confirmPassword">Confirm New Password</label>
                         <span class="focus-border"><i></i></span>
+                        <button type="button" class="toggle-password" data-target="confirmPassword" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:#0d6efd; border:none; cursor:pointer; padding:8px; border-radius:6px; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 6px rgba(13,110,253,0.4);">
+                            <i class="bi bi-eye" id="confirmPasswordIcon" style="color:#fff; font-size:16px;"></i>
+                        </button>
                     </div>
                     <button type="submit" class="login100-form-btn">Reset Password</button>
                 </form>
@@ -85,7 +101,6 @@
         })
     });
 
-    // Shake animation for error alerts
     function shakeAlert() {
         $('.alert-danger').each(function() {
             $(this).css({
@@ -94,6 +109,19 @@
         });
     }
     shakeAlert();
+
+    $('.toggle-password').on('click', function() {
+        var targetId = $(this).data('target');
+        var input = $('#' + targetId);
+        var icon = $('#' + targetId + 'Icon');
+        if (input.attr('type') === 'password') {
+            input.attr('type', 'text');
+            icon.removeClass('bi-eye').addClass('bi-eye-slash');
+        } else {
+            input.attr('type', 'password');
+            icon.removeClass('bi-eye-slash').addClass('bi-eye');
+        }
+    });
 </script>
 </body>
 </html>
