@@ -21,7 +21,7 @@ public class User {
     private String password;
 
     @Column(nullable = false, length = 50)
-    private String role; // e.g., "USER" or "ADMIN"
+    private String role; // e.g., "ADMIN" or "LOCALITY_USER"
 
     @ManyToOne
     @JoinColumn(name = "village_id")

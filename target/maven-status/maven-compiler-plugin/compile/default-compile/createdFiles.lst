@@ -13,6 +13,7 @@ com/example/demo/controller/ComplaintController.class
 com/example/demo/model/Complaint.class
 com/example/demo/service/FileStorageService.class
 com/example/demo/controller/VillageLandingController.class
+com/example/demo/security/SecurityConfig$1.class
 com/example/demo/repository/DivisionRepository.class
 com/example/demo/repository/UserRepository.class
 com/example/demo/controller/AdminDashboardController$MandalReportItem.class

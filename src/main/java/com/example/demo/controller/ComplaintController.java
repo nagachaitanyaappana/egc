@@ -3,10 +3,12 @@ package com.example.demo.controller;
 import com.example.demo.model.Complaint;
 import com.example.demo.model.Photo;
 import com.example.demo.model.User;
+import com.example.demo.model.Village;
 import com.example.demo.repository.ComplaintRepository;
 import com.example.demo.repository.PhotoRepository;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,9 +26,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
-@PreAuthorize("isAuthenticated()")
+@PreAuthorize("hasAnyRole('ADMIN', 'LOCALITY_USER')")
 public class ComplaintController {
 
     @Autowired
@@ -38,17 +41,20 @@ public class ComplaintController {
     @Autowired
     private PhotoRepository photoRepository;
 
+    @PreAuthorize("hasRole('LOCALITY_USER')")
     @GetMapping("/complaint")
     public String showComplaintForm(Model model) {
         return "complaint-form";
     }
 
+    @PreAuthorize("hasRole('LOCALITY_USER')")
     @PostMapping("/complaint")
     public String submitComplaint(@RequestParam String complaintContent,
                                   @RequestParam("photos") MultipartFile[] photos,
                                   @RequestParam(value = "createdAt", required = false) String createdAtStr,
                                   @RequestParam(value = "type", required = false) String type,
                                   @RequestParam(value = "otherType", required = false) String otherType,
+                                  @RequestParam(value = "priority", required = false) String priority,
                                   @AuthenticationPrincipal UserDetails userDetails,
                                   Model model) throws IOException {
 
@@ -60,6 +66,9 @@ public class ComplaintController {
         complaint.setContent(complaintContent);
         complaint.setType(type);
         complaint.setOtherType(otherType);
+        if (priority != null && !priority.isBlank()) {
+            complaint.setPriority(priority);
+        }
 
         if (createdAtStr != null && !createdAtStr.isBlank()) {
             try {
@@ -88,7 +97,72 @@ public class ComplaintController {
         return "complaint-form";
     }
 
+    @GetMapping("/complaints/my")
+    @PreAuthorize("hasRole('LOCALITY_USER')")
+    public String myComplaints(@AuthenticationPrincipal UserDetails userDetails,
+                               @RequestParam(value = "type", required = false) String type,
+                               @RequestParam(value = "priority", required = false) String priority,
+                               Model model) {
+        User currentUser = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new IllegalStateException("Authenticated user not found"));
+
+        Village village = currentUser.getVillage();
+        if (village == null) {
+            model.addAttribute("complaints", List.of());
+            model.addAttribute("villageName", currentUser.getUsername());
+            model.addAttribute("selectedType", type);
+            model.addAttribute("selectedPriority", priority);
+            return "my-complaints";
+        }
+
+        List<Complaint> complaints = complaintRepository.findByUser_Village_Id(village.getId());
+
+        if (type != null && !type.isBlank()) {
+            complaints = complaints.stream()
+                    .filter(c -> type.equals(c.getType()))
+                    .collect(Collectors.toList());
+        }
+
+        if (priority != null && !priority.isBlank()) {
+            complaints = complaints.stream()
+                    .filter(c -> priority.equals(c.getPriority()))
+                    .collect(Collectors.toList());
+        }
+
+        model.addAttribute("complaints", complaints);
+        model.addAttribute("villageName", village.getName());
+        model.addAttribute("selectedType", type);
+        model.addAttribute("selectedPriority", priority);
+        return "my-complaints";
+    }
+
+    @GetMapping("/complaints/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOCALITY_USER')")
+    public String complaintDetail(@PathVariable Long id,
+                                  @AuthenticationPrincipal UserDetails userDetails,
+                                  Model model) {
+        Complaint complaint = complaintRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Complaint not found: " + id));
+
+        User currentUser = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new IllegalStateException("Authenticated user not found"));
+
+        boolean isAdmin = currentUser.getRole().equalsIgnoreCase("ADMIN");
+        if (!isAdmin) {
+            Village complaintVillage = complaint.getUser() != null ? complaint.getUser().getVillage() : null;
+            Village currentVillage = currentUser.getVillage();
+            if (complaintVillage == null || currentVillage == null ||
+                    !complaintVillage.getId().equals(currentVillage.getId())) {
+                throw new AccessDeniedException("Access denied");
+            }
+        }
+
+        model.addAttribute("complaint", complaint);
+        return "complaint-detail";
+    }
+
     @GetMapping("/photos/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOCALITY_USER')")
     public ResponseEntity<byte[]> servePhoto(@PathVariable Long id) {
         Photo photo = photoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Photo not found: " + id));

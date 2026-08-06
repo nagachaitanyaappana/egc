@@ -1077,3 +1077,56 @@ input[type="checkbox"] {
     font-size: 0.85rem;
     color: var(--text-secondary);
 }
+
+.priority-badge {
+    display: inline-block;
+    padding: 0.35rem 0.6rem;
+    border-radius: 0.25rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.priority-low {
+    background: #f59f0b;
+    color: #fff;
+}
+
+.priority-medium {
+    background: #f97316;
+    color: #fff;
+}
+
+.priority-high {
+    background: #dc2626;
+    color: #fff;
+}
+
+.priority-critical {
+    background: #7f1d1d;
+    color: #fff;
+}
+
+.locality-badge {
+    display: inline-block;
+    padding: 0.35rem 0.6rem;
+    border-radius: 0.25rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.locality-active {
+    background: #2563eb;
+    color: #fff;
+}
+
+.locality-pending {
+    background: #dc2626;
+    color: #fff;
+}
+
+.locality-no-reports {
+    background: #7f1d1d;
+    color: #fff;
+}

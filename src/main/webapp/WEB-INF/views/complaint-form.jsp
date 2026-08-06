@@ -21,7 +21,8 @@
                     <div class="subtitle">Public Complaint Submission Portal</div>
                 </div>
                 <ul class="nav-list">
-                    <li><a href="${pageContext.request.contextPath}/complaint" class="active">Complaint</a></li>
+                    <li><a href="${pageContext.request.contextPath}/complaint" class="active">Submit Complaint</a></li>
+                    <li><a href="${pageContext.request.contextPath}/complaints/my">My Complaints</a></li>
                 </ul>
             </div>
             <div class="header-right">
@@ -87,6 +88,16 @@
                             <option value="HIV_INFECTION">HIV Infection</option>
                             <option value="ORPHANS">Orphans</option>
                             <option value="OTHER">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="complaintPriority" class="form-label">Priority</label>
+                        <select class="form-select" id="complaintPriority" name="priority">
+                            <option value="LOW">Low</option>
+                            <option value="MEDIUM" selected>Medium</option>
+                            <option value="HIGH">High</option>
+                            <option value="CRITICAL">Critical</option>
                         </select>
                     </div>
 
@@ -266,6 +277,7 @@
         formData.append('complaintContent', complaintContent);
         formData.append('type', type);
         formData.append('otherType', otherType);
+        formData.append('priority', document.getElementById('complaintPriority').value);
         filesToSubmit.forEach(file => formData.append('photos', file));
 
         const headers = {};

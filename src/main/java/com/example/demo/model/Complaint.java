@@ -32,6 +32,9 @@ public class Complaint {
     @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean isDemo = false;
 
+    @Column(length = 20)
+    private String priority = "MEDIUM";
+
     // Constructors
     public Complaint() {}
 
@@ -103,5 +106,13 @@ public class Complaint {
 
     public void setDemo(boolean demo) {
         isDemo = demo;
+    }
+
+    public String getPriority() {
+        return priority;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
     }
 }

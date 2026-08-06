@@ -1,9 +1,12 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Complaint;
+import com.example.demo.model.Division;
+import com.example.demo.model.Locality;
 import com.example.demo.model.Mandal;
 import com.example.demo.model.Village;
 import com.example.demo.repository.ComplaintRepository;
+import com.example.demo.repository.DivisionRepository;
 import com.example.demo.repository.MandalRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.VillageRepository;
@@ -11,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +27,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin")
@@ -63,6 +70,9 @@ public class AdminDashboardController {
     private MandalRepository mandalRepository;
 
     @Autowired
+    private DivisionRepository divisionRepository;
+
+    @Autowired
     private VillageRepository villageRepository;
 
     @Autowired
@@ -74,9 +84,167 @@ public class AdminDashboardController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/dashboard")
     public String adminDashboard(Model model) {
-        List<Mandal> mandals = mandalRepository.findAll();
-        model.addAttribute("mandals", mandals);
         return "admin-dashboard";
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/localities")
+    public String adminLocalities(@RequestParam(value = "search", required = false) String search, Model model) {
+        List<Division> divisions = divisionRepository.findAll();
+        java.util.Map<com.example.demo.model.DivisionType, List<Division>> grouped = divisions.stream()
+                .collect(java.util.stream.Collectors.groupingBy(Division::getType));
+
+        long mandalCount = grouped.getOrDefault(com.example.demo.model.DivisionType.MANDAL, List.of()).size();
+        long municipalityCount = grouped.getOrDefault(com.example.demo.model.DivisionType.MUNICIPALITY, List.of()).size();
+        long corporationCount = grouped.getOrDefault(com.example.demo.model.DivisionType.CORPORATION, List.of()).size();
+        long nagarPanchayatCount = grouped.getOrDefault(com.example.demo.model.DivisionType.NAGAR_PANCHAYAT, List.of()).size();
+
+        java.util.Map<Long, Long> divisionStats = new java.util.HashMap<>();
+        for (Division d : divisions) {
+            long count = 0;
+            for (Locality l : d.getLocalities()) {
+                Village matchedVillage = villageRepository.findByName(l.getName()).orElse(null);
+                if (matchedVillage != null) {
+                    count += complaintRepository.countByUserVillage(matchedVillage);
+                }
+            }
+            divisionStats.put(d.getId(), count);
+        }
+
+        if (search != null && !search.isBlank()) {
+            String term = search.toLowerCase();
+            java.util.Map<com.example.demo.model.DivisionType, List<Division>> filtered = new java.util.HashMap<>();
+            for (java.util.Map.Entry<com.example.demo.model.DivisionType, List<Division>> entry : grouped.entrySet()) {
+                List<Division> matched = entry.getValue().stream()
+                        .filter(d -> d.getName().toLowerCase().contains(term))
+                        .toList();
+                if (matched.isEmpty()) {
+                    for (Division d : entry.getValue()) {
+                        boolean hasLocality = d.getLocalities().stream()
+                                .anyMatch(l -> l.getName().toLowerCase().contains(term));
+                        if (hasLocality) {
+                            matched = List.of(d);
+                            break;
+                        }
+                    }
+                }
+                if (!matched.isEmpty()) {
+                    filtered.put(entry.getKey(), matched);
+                }
+            }
+            grouped = filtered;
+        }
+
+        model.addAttribute("groupedDivisions", grouped);
+        model.addAttribute("divisionTypes", com.example.demo.model.DivisionType.values());
+        model.addAttribute("search", search);
+        model.addAttribute("mandalCount", mandalCount);
+        model.addAttribute("municipalityCount", municipalityCount);
+        model.addAttribute("corporationCount", corporationCount);
+        model.addAttribute("nagarPanchayatCount", nagarPanchayatCount);
+        model.addAttribute("divisionStats", divisionStats);
+        return "admin-localities";
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/division/{id}")
+    public String divisionDetails(@PathVariable("id") Long id, Model model) {
+        Division division = divisionRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Division not found: " + id));
+
+        List<Locality> localities = division.getLocalities();
+        long totalLocalities = localities.size();
+
+        long totalComplaints = 0;
+        long pendingComplaints = 0;
+        long criticalComplaints = 0;
+
+        java.util.Map<Long, java.time.LocalDateTime> lastSubmissionMap = new java.util.HashMap<>();
+        java.util.Map<Long, String> statusMap = new java.util.HashMap<>();
+        java.util.Map<Long, Long> complaintCountMap = new java.util.HashMap<>();
+
+        java.util.List<Locality> sortedLocalities = new java.util.ArrayList<>(localities);
+        sortedLocalities.sort((a, b) -> {
+            String statusA = getLocalityStatus(a, lastSubmissionMap, statusMap);
+            String statusB = getLocalityStatus(b, lastSubmissionMap, statusMap);
+            int orderA = switch (statusA) {
+                case "No Reports" -> 0;
+                case "Pending" -> 1;
+                case "Active" -> 2;
+                default -> 3;
+            };
+            int orderB = switch (statusB) {
+                case "No Reports" -> 0;
+                case "Pending" -> 1;
+                case "Active" -> 2;
+                default -> 3;
+            };
+            return Integer.compare(orderA, orderB);
+        });
+
+        for (Locality locality : sortedLocalities) {
+            List<Complaint> localityComplaints = List.of();
+            Village matchedVillage = villageRepository.findByName(locality.getName()).orElse(null);
+            if (matchedVillage != null) {
+                localityComplaints = complaintRepository.findByUserVillage(matchedVillage);
+            }
+            complaintCountMap.put(locality.getId(), (long) localityComplaints.size());
+            totalComplaints += localityComplaints.size();
+            if (localityComplaints.isEmpty()) {
+                pendingComplaints++;
+                statusMap.put(locality.getId(), "No Reports");
+            } else {
+                lastSubmissionMap.put(locality.getId(), localityComplaints.get(0).getCreatedAt());
+                long daysSince = java.time.temporal.ChronoUnit.DAYS.between(
+                        localityComplaints.get(0).getCreatedAt().toLocalDate(),
+                        java.time.LocalDate.now()
+                );
+                if (daysSince > 14) {
+                    pendingComplaints++;
+                    statusMap.put(locality.getId(), "Pending");
+                } else {
+                    statusMap.put(locality.getId(), "Active");
+                }
+                for (Complaint c : localityComplaints) {
+                    if ("CRITICAL".equalsIgnoreCase(c.getPriority())) {
+                        criticalComplaints++;
+                    }
+                }
+            }
+        }
+
+        model.addAttribute("division", division);
+        model.addAttribute("localities", sortedLocalities);
+        model.addAttribute("totalLocalities", totalLocalities);
+        model.addAttribute("totalComplaints", totalComplaints);
+        model.addAttribute("pendingComplaints", pendingComplaints);
+        model.addAttribute("criticalComplaints", criticalComplaints);
+        model.addAttribute("lastSubmissionMap", lastSubmissionMap);
+        model.addAttribute("statusMap", statusMap);
+        model.addAttribute("complaintCountMap", complaintCountMap);
+        return "admin-division";
+    }
+
+    private String getLocalityStatus(Locality locality, java.util.Map<Long, java.time.LocalDateTime> lastSubmissionMap, java.util.Map<Long, String> statusMap) {
+        if (statusMap.containsKey(locality.getId())) {
+            return statusMap.get(locality.getId());
+        }
+        List<Complaint> localityComplaints = List.of();
+        Village matchedVillage = villageRepository.findByName(locality.getName()).orElse(null);
+        if (matchedVillage != null) {
+            localityComplaints = complaintRepository.findByUserVillage(matchedVillage);
+        }
+        if (localityComplaints.isEmpty()) {
+            statusMap.put(locality.getId(), "No Reports");
+        } else {
+            lastSubmissionMap.put(locality.getId(), localityComplaints.get(0).getCreatedAt());
+            long daysSince = java.time.temporal.ChronoUnit.DAYS.between(
+                    localityComplaints.get(0).getCreatedAt().toLocalDate(),
+                    java.time.LocalDate.now()
+            );
+            statusMap.put(locality.getId(), daysSince > 14 ? "Pending" : "Active");
+        }
+        return statusMap.get(locality.getId());
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -95,10 +263,19 @@ public class AdminDashboardController {
                 .filter(v -> complaintRepository.countByUserVillage(v) == 0)
                 .toList();
 
+        java.util.Map<Long, java.time.LocalDateTime> lastSubmissionMap = new java.util.HashMap<>();
+        for (Village v : villages) {
+            List<Complaint> complaints = complaintRepository.findByUserVillage(v);
+            if (!complaints.isEmpty()) {
+                lastSubmissionMap.put(v.getId(), complaints.get(0).getCreatedAt());
+            }
+        }
+
         model.addAttribute("mandal", mandal);
         model.addAttribute("villages", villages);
         model.addAttribute("submitted", submitted);
         model.addAttribute("notSubmitted", notSubmitted);
+        model.addAttribute("lastSubmissionMap", lastSubmissionMap);
         return "mandal-villages";
     }
 
@@ -137,12 +314,25 @@ public class AdminDashboardController {
                 .filter(v -> complaintRepository.countByUserVillage(v) == 0)
                 .toList();
 
+        long totalComplaints = submitted.stream()
+                .mapToLong(v -> complaintRepository.countByUserVillage(v))
+                .sum();
+
+        long pendingComplaints = notSubmitted.size();
+
+        java.util.Map<Long, List<Complaint>> complainMap = new java.util.HashMap<>();
+        for (Village v : submitted) {
+            List<Complaint> complaints = complaintRepository.findByUserVillage(v);
+            complainMap.put(v.getId(), complaints);
+        }
+
         model.addAttribute("mandal", mandal);
         model.addAttribute("totalVillages", villages.size());
-        model.addAttribute("submittedCount", submitted.size());
-        model.addAttribute("pendingCount", notSubmitted.size());
+        model.addAttribute("totalComplaints", totalComplaints);
+        model.addAttribute("pendingComplaints", pendingComplaints);
         model.addAttribute("submitted", submitted);
         model.addAttribute("notSubmitted", notSubmitted);
+        model.addAttribute("complainMap", complainMap);
         return "mandal-reports";
     }
 
@@ -151,11 +341,127 @@ public class AdminDashboardController {
     public String overallReports(Model model) {
         List<Mandal> mandals = mandalRepository.findAll();
         List<Village> allVillages = villageRepository.findAll();
+        List<Division> allDivisions = divisionRepository.findAll();
 
         long submittedVillages = allVillages.stream()
                 .filter(v -> complaintRepository.countByUserVillage(v) > 0)
                 .count();
         long pendingVillages = allVillages.size() - submittedVillages;
+
+        long totalComplaints = complaintRepository.countAll();
+        long pendingComplaints = allVillages.stream()
+                .filter(v -> complaintRepository.countByUserVillage(v) == 0)
+                .count();
+
+        long majorCases = complaintRepository.countByTypeIn(List.of("HIGH", "CRITICAL"));
+
+        LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
+        long recentComplaints = complaintRepository.countByCreatedAtAfter(sevenDaysAgo);
+
+        long criticalComplaints = complaintRepository.countByPriority("CRITICAL");
+
+        long activeLocalities = allVillages.stream()
+                .filter(v -> complaintRepository.countByUserVillage(v) > 0)
+                .count();
+
+        long inactiveLocalities = allVillages.stream()
+                .filter(v -> {
+                    List<Complaint> vComplaints = complaintRepository.findByUser_Village_Id(v.getId());
+                    if (vComplaints.isEmpty()) return true;
+                    long daysSince = java.time.temporal.ChronoUnit.DAYS.between(
+                            vComplaints.get(0).getCreatedAt().toLocalDate(),
+                            java.time.LocalDate.now()
+                    );
+                    return daysSince > 14;
+                })
+                .count();
+
+        List<Complaint> allComplaints = complaintRepository.findAll();
+        java.util.Map<String, Long> complaintsByType = allComplaints.stream()
+                .collect(java.util.stream.Collectors.groupingBy(
+                        c -> c.getType() != null ? c.getType() : "UNKNOWN",
+                        java.util.stream.Collectors.counting()
+                ));
+
+        java.util.Map<String, Long> complaintsByPriority = allComplaints.stream()
+                .filter(c -> c.getPriority() != null)
+                .collect(java.util.stream.Collectors.groupingBy(
+                        Complaint::getPriority,
+                        java.util.stream.Collectors.counting()
+                ));
+
+        java.util.Map<String, Long> complaintsByDivision = new java.util.LinkedHashMap<>();
+        for (Division division : allDivisions) {
+            long count = 0;
+            for (Locality locality : division.getLocalities()) {
+                Village matchedVillage = villageRepository.findByName(locality.getName()).orElse(null);
+                if (matchedVillage != null) {
+                    count += complaintRepository.countByUserVillage(matchedVillage);
+                }
+            }
+            if (count > 0) {
+                complaintsByDivision.put(division.getName(), count);
+            }
+        }
+        complaintsByDivision = complaintsByDivision.entrySet().stream()
+                .sorted((a, b) -> Long.compare(b.getValue(), a.getValue()))
+                .collect(java.util.stream.Collectors.toMap(
+                        java.util.Map.Entry::getKey,
+                        java.util.Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        java.util.LinkedHashMap::new
+                ));
+
+        java.util.Map<String, Long> monthlyTrend = new java.util.LinkedHashMap<>();
+        java.time.LocalDateTime now = java.time.LocalDateTime.now();
+        for (int i = 11; i >= 0; i--) {
+            java.time.LocalDateTime monthStart = now.minusMonths(i).withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
+            java.time.LocalDateTime monthEnd = monthStart.plusMonths(1);
+            long count = allComplaints.stream()
+                    .filter(c -> c.getCreatedAt() != null && !c.getCreatedAt().isBefore(monthStart) && c.getCreatedAt().isBefore(monthEnd))
+                    .count();
+            monthlyTrend.put(monthStart.format(java.time.format.DateTimeFormatter.ofPattern("MMM yyyy")), count);
+        }
+
+        long topDivisionsCount = activeLocalities + inactiveLocalities;
+        java.util.Map<String, Long> localityActivityMap = new java.util.LinkedHashMap<>();
+        localityActivityMap.put("Active Localities", activeLocalities);
+        localityActivityMap.put("Inactive Localities", inactiveLocalities);
+
+        List<Map<String, Object>> topDivisions = new java.util.ArrayList<>();
+        for (java.util.Map.Entry<String, Long> entry : complaintsByDivision.entrySet().stream().limit(5).toList()) {
+            Map<String, Object> row = new java.util.HashMap<>();
+            row.put("name", entry.getKey());
+            row.put("count", entry.getValue());
+            topDivisions.add(row);
+        }
+
+        List<Map<String, Object>> topInactiveLocalities = new java.util.ArrayList<>();
+        for (Village v : allVillages) {
+            List<Complaint> vComplaints = complaintRepository.findByUser_Village_Id(v.getId());
+            if (vComplaints.isEmpty()) continue;
+            long daysSince = java.time.temporal.ChronoUnit.DAYS.between(
+                    vComplaints.get(0).getCreatedAt().toLocalDate(),
+                    java.time.LocalDate.now()
+            );
+            if (daysSince > 14) {
+                Map<String, Object> row = new java.util.HashMap<>();
+                row.put("name", v.getName());
+                row.put("division", v.getMandal() != null ? v.getMandal().getName() : "N/A");
+                row.put("daysSince", daysSince);
+                topInactiveLocalities.add(row);
+            }
+        }
+        topInactiveLocalities.sort((a, b) -> Long.compare((Long) b.get("daysSince"), (Long) a.get("daysSince")));
+        if (topInactiveLocalities.size() > 5) {
+            topInactiveLocalities = topInactiveLocalities.subList(0, 5);
+        }
+
+        List<Complaint> recentCritical = allComplaints.stream()
+                .filter(c -> "CRITICAL".equalsIgnoreCase(c.getPriority()))
+                .sorted((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()))
+                .limit(10)
+                .toList();
 
         List<MandalReportItem> submittedDetails = buildSubmittedDetails();
         List<MandalReportItem> pendingDetails = buildPendingDetails();
@@ -164,9 +470,90 @@ public class AdminDashboardController {
         model.addAttribute("totalVillages", allVillages.size());
         model.addAttribute("submittedVillages", submittedVillages);
         model.addAttribute("pendingVillages", pendingVillages);
+        model.addAttribute("totalComplaints", totalComplaints);
+        model.addAttribute("pendingComplaints", pendingComplaints);
+        model.addAttribute("majorCases", majorCases);
+        model.addAttribute("criticalComplaints", criticalComplaints);
+        model.addAttribute("activeLocalities", activeLocalities);
+        model.addAttribute("inactiveLocalities", inactiveLocalities);
+        model.addAttribute("complaintsByType", complaintsByType);
         model.addAttribute("submittedDetails", submittedDetails);
         model.addAttribute("pendingDetails", pendingDetails);
+
+        model.addAttribute("complaintsByPriority", complaintsByPriority);
+        model.addAttribute("complaintsByDivision", complaintsByDivision);
+        model.addAttribute("monthlyTrend", monthlyTrend);
+        model.addAttribute("localityActivityMap", localityActivityMap);
+        model.addAttribute("topDivisions", topDivisions);
+        model.addAttribute("topInactiveLocalities", topInactiveLocalities);
+        model.addAttribute("recentCritical", recentCritical);
+
         return "reports";
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/complaints")
+    public String adminComplaints(
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "priority", required = false) String priority,
+            @RequestParam(value = "type", required = false) String type,
+            @RequestParam(value = "villageId", required = false) Long villageId,
+            Model model) {
+
+        Specification<Complaint> spec = Specification.where(null);
+
+        if (search != null && !search.isBlank()) {
+            String term = search.toLowerCase();
+            spec = spec.and((root, query, cb) -> {
+                String like = "%" + term + "%";
+                return cb.or(
+                    cb.like(cb.lower(root.get("id").as(String.class)), like),
+                    cb.like(cb.lower(root.get("type")), like),
+                    cb.like(cb.lower(root.get("user").get("village").get("name")), like)
+                );
+            });
+        }
+
+        if (priority != null && !priority.isBlank()) {
+            spec = spec.and((root, query, cb) ->
+                cb.equal(cb.lower(root.get("priority")), priority.toLowerCase())
+            );
+        }
+
+        if (type != null && !type.isBlank()) {
+            spec = spec.and((root, query, cb) ->
+                cb.equal(cb.lower(root.get("type")), type.toLowerCase())
+            );
+        }
+
+        if (villageId != null) {
+            spec = spec.and((root, query, cb) ->
+                cb.equal(root.get("user").get("village").get("id"), villageId)
+            );
+        }
+
+        List<Complaint> complaints = complaintRepository.findAll(spec);
+
+        model.addAttribute("complaints", complaints);
+        model.addAttribute("search", search);
+        model.addAttribute("selectedPriority", priority);
+        model.addAttribute("selectedType", type);
+        model.addAttribute("selectedVillageId", villageId);
+        model.addAttribute("villages", villageRepository.findAll());
+        model.addAttribute("complaintTypes", List.of(
+            "CHILD_MARRIAGE", "POCSO", "CHILD_LABOUR", "SCHOOL_DROPOUTS",
+            "CHILD_NEGLIGENCY", "HIV_INFECTION", "ORPHANS", "OTHER"
+        ));
+        return "admin-complaints";
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/complaints/{id}")
+    public String adminComplaintDetail(@PathVariable("id") Long id, Model model) {
+        Complaint complaint = complaintRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Complaint not found: " + id));
+        model.addAttribute("complaint", complaint);
+        return "admin-complaint-detail";
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -265,6 +652,458 @@ public class AdminDashboardController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_PDF);
         httpHeaders.setContentDispositionFormData("attachment", "reports_" + type + ".pdf");
+        httpHeaders.setContentLength(out.size());
+
+        return ResponseEntity.ok().headers(httpHeaders).body(out.toByteArray());
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/reports/details")
+    public String reportDetails(@RequestParam("type") String type, Model model) {
+        model.addAttribute("reportType", type);
+        model.addAttribute("exportBase", "report_details");
+
+        switch (type.toUpperCase()) {
+            case "TOTAL" -> {
+                List<Complaint> all = complaintRepository.findAll();
+                model.addAttribute("complaints", all);
+                model.addAttribute("pageTitle", "Total Complaints");
+            }
+            case "PENDING" -> {
+                List<Village> pendingVillages = villageRepository.findAll().stream()
+                        .filter(v -> complaintRepository.countByUserVillage(v) == 0)
+                        .toList();
+                model.addAttribute("pendingVillages", pendingVillages);
+                model.addAttribute("pageTitle", "Pending Villages");
+            }
+            case "MAJOR" -> {
+                List<Complaint> major = complaintRepository.findByTypeIn(List.of("HIGH", "CRITICAL"));
+                model.addAttribute("complaints", major);
+                model.addAttribute("pageTitle", "Major Cases");
+            }
+            case "RECENT" -> {
+                LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
+                List<Complaint> recent = complaintRepository.findByCreatedAtAfter(sevenDaysAgo);
+                model.addAttribute("complaints", recent);
+                model.addAttribute("pageTitle", "Last 7 Days Complaints");
+            }
+            case "CRITICAL" -> {
+                List<Complaint> critical = complaintRepository.findByPriority("CRITICAL");
+                model.addAttribute("complaints", critical);
+                model.addAttribute("pageTitle", "Critical Complaints");
+            }
+            case "PENDING_LOCALITIES" -> {
+                List<Village> allVillages = villageRepository.findAll();
+                List<Map<String, Object>> pendingLocalities = new ArrayList<>();
+                for (Village v : allVillages) {
+                    List<Complaint> vComplaints = complaintRepository.findByUserVillage(v);
+                    Map<String, Object> row = new java.util.HashMap<>();
+                    row.put("village", v);
+                    if (!vComplaints.isEmpty()) {
+                        row.put("lastReportDate", vComplaints.get(0).getCreatedAt());
+                        long daysSince = java.time.temporal.ChronoUnit.DAYS.between(
+                                vComplaints.get(0).getCreatedAt().toLocalDate(),
+                                java.time.LocalDate.now()
+                        );
+                        row.put("daysSince", daysSince);
+                        row.put("status", daysSince <= 14 ? "Active" : "Pending");
+                    } else {
+                        row.put("lastReportDate", null);
+                        row.put("daysSince", null);
+                        row.put("status", "No Reports");
+                    }
+                    pendingLocalities.add(row);
+                }
+                model.addAttribute("pendingLocalities", pendingLocalities);
+                model.addAttribute("pageTitle", "Pending Localities");
+            }
+            case "INACTIVE_LOCALITIES" -> {
+                List<Village> allVillages2 = villageRepository.findAll();
+                List<Map<String, Object>> inactiveLocalities = new ArrayList<>();
+                for (Village v : allVillages2) {
+                    List<Complaint> vComplaints = complaintRepository.findByUser_Village_Id(v.getId());
+                    Map<String, Object> row = new java.util.HashMap<>();
+                    row.put("village", v);
+                    if (!vComplaints.isEmpty()) {
+                        row.put("lastReportDate", vComplaints.get(0).getCreatedAt());
+                        long daysSince = java.time.temporal.ChronoUnit.DAYS.between(
+                                vComplaints.get(0).getCreatedAt().toLocalDate(),
+                                java.time.LocalDate.now()
+                        );
+                        row.put("daysSince", daysSince);
+                        row.put("status", daysSince <= 14 ? "Active" : "Inactive");
+                    } else {
+                        row.put("lastReportDate", null);
+                        row.put("daysSince", null);
+                        row.put("status", "No Reports");
+                    }
+                    inactiveLocalities.add(row);
+                }
+                inactiveLocalities.sort((a, b) -> {
+                    Long daysA = (Long) a.get("daysSince");
+                    Long daysB = (Long) b.get("daysSince");
+                    if (daysA == null && daysB == null) return 0;
+                    if (daysA == null) return 1;
+                    if (daysB == null) return -1;
+                    return Long.compare(daysB, daysA);
+                });
+                model.addAttribute("pendingLocalities", inactiveLocalities);
+                model.addAttribute("pageTitle", "Inactive Localities");
+            }
+            default -> {
+                model.addAttribute("complaints", List.of());
+                model.addAttribute("pageTitle", "Unknown Report");
+            }
+        }
+        return "report-details";
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/reports/export/details/excel")
+    public ResponseEntity<byte[]> exportDetailsExcel(@RequestParam String type) throws Exception {
+        List<String[]> rows = new ArrayList<>();
+        String fileName = "report_" + type;
+
+        switch (type.toUpperCase()) {
+            case "TOTAL", "MAJOR", "RECENT", "CRITICAL" -> {
+                List<Complaint> complaints = switch (type.toUpperCase()) {
+                    case "TOTAL" -> complaintRepository.findAll();
+                    case "MAJOR" -> complaintRepository.findByTypeIn(List.of("HIGH", "CRITICAL"));
+                    case "RECENT" -> complaintRepository.findByCreatedAtAfter(LocalDateTime.now().minusDays(7));
+                    case "CRITICAL" -> complaintRepository.findByPriority("CRITICAL");
+                    default -> List.of();
+                };
+                rows.add(new String[]{"ID", "Type", "Locality", "Mandal", "Submitted By", "Priority", "Created Date"});
+                for (Complaint c : complaints) {
+                    String mandalName = c.getUser() != null && c.getUser().getVillage() != null &&
+                            c.getUser().getVillage().getMandal() != null
+                            ? c.getUser().getVillage().getMandal().getName() : "N/A";
+                    rows.add(new String[]{
+                            String.valueOf(c.getId()),
+                            c.getType() != null ? c.getType() : "",
+                            c.getUser() != null && c.getUser().getVillage() != null ? c.getUser().getVillage().getName() : "",
+                            mandalName,
+                            c.getUser() != null ? c.getUser().getUsername() : "",
+                            c.getPriority() != null ? c.getPriority() : "",
+                            c.getCreatedAt() != null ? c.getCreatedAt().toString() : ""
+                    });
+                }
+            }
+            case "PENDING" -> {
+                List<Village> pendingVillages = villageRepository.findAll().stream()
+                        .filter(v -> complaintRepository.countByUserVillage(v) == 0)
+                        .toList();
+                rows.add(new String[]{"Village Name", "Mandal Name", "Status"});
+                for (Village v : pendingVillages) {
+                    rows.add(new String[]{
+                            v.getName(),
+                            v.getMandal() != null ? v.getMandal().getName() : "N/A",
+                            "Pending"
+                    });
+                }
+            }
+            case "PENDING_LOCALITIES", "INACTIVE_LOCALITIES" -> {
+                List<Village> allVillages = villageRepository.findAll();
+                rows.add(new String[]{"Locality Name", "Mandal Name", "Last Report Date", "Days Since Last Report", "Status"});
+                for (Village v : allVillages) {
+                    List<Complaint> vComplaints = complaintRepository.findByUser_Village_Id(v.getId());
+                    if (vComplaints.isEmpty()) {
+                        rows.add(new String[]{
+                                v.getName(),
+                                v.getMandal() != null ? v.getMandal().getName() : "N/A",
+                                "",
+                                "",
+                                "No Reports"
+                        });
+                    } else {
+                        LocalDateTime lastDate = vComplaints.get(0).getCreatedAt();
+                        long daysSince = java.time.temporal.ChronoUnit.DAYS.between(
+                                lastDate.toLocalDate(), java.time.LocalDate.now()
+                        );
+                        String status = "PENDING_LOCALITIES".equals(type.toUpperCase())
+                                ? (daysSince <= 14 ? "Active" : "Pending")
+                                : (daysSince <= 14 ? "Active" : "Inactive");
+                        rows.add(new String[]{
+                                v.getName(),
+                                v.getMandal() != null ? v.getMandal().getName() : "N/A",
+                                lastDate.toString(),
+                                String.valueOf(daysSince),
+                                status
+                        });
+                    }
+                }
+            }
+            default -> {
+                rows.add(new String[]{"No data"});
+            }
+        }
+
+        org.apache.poi.ss.usermodel.Workbook wb = new org.apache.poi.xssf.usermodel.XSSFWorkbook();
+        org.apache.poi.ss.usermodel.Sheet sheet = wb.createSheet(fileName);
+
+        for (int i = 0; i < rows.size(); i++) {
+            org.apache.poi.ss.usermodel.Row row = sheet.createRow(i);
+            String[] cols = rows.get(i);
+            for (int j = 0; j < cols.length; j++) {
+                row.createCell(j).setCellValue(cols[j] != null ? cols[j] : "");
+            }
+        }
+
+        for (int i = 0; i < rows.get(0).length; i++) {
+            sheet.setColumnWidth(i, 25 * 256);
+        }
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        wb.write(out);
+        wb.close();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", fileName + ".xlsx");
+        headers.setContentLength(out.size());
+
+        return ResponseEntity.ok().headers(headers).body(out.toByteArray());
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/reports/export/details/pdf")
+    public ResponseEntity<byte[]> exportDetailsPdf(@RequestParam String type) throws Exception {
+        String fileName = "report_" + type;
+        String title = "REPORT: " + type.toUpperCase();
+
+        com.lowagie.text.Document document = new com.lowagie.text.Document(com.lowagie.text.PageSize.A4);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        com.lowagie.text.pdf.PdfWriter.getInstance(document, out);
+        document.open();
+
+        com.lowagie.text.Font titleFont = new com.lowagie.text.Font(com.lowagie.text.Font.HELVETICA, 16, com.lowagie.text.Font.BOLD);
+        document.add(new com.lowagie.text.Paragraph(title, titleFont));
+        document.add(new com.lowagie.text.Paragraph(" "));
+
+        int columns = 0;
+        List<String[]> rows = new ArrayList<>();
+
+        switch (type.toUpperCase()) {
+            case "TOTAL", "MAJOR", "RECENT", "CRITICAL" -> {
+                List<Complaint> complaints = switch (type.toUpperCase()) {
+                    case "TOTAL" -> complaintRepository.findAll();
+                    case "MAJOR" -> complaintRepository.findByTypeIn(List.of("HIGH", "CRITICAL"));
+                    case "RECENT" -> complaintRepository.findByCreatedAtAfter(LocalDateTime.now().minusDays(7));
+                    case "CRITICAL" -> complaintRepository.findByPriority("CRITICAL");
+                    default -> List.of();
+                };
+                columns = 7;
+                rows.add(new String[]{"ID", "Type", "Locality", "Mandal", "Submitted By", "Priority", "Created Date"});
+                for (Complaint c : complaints) {
+                    String mandalName = c.getUser() != null && c.getUser().getVillage() != null &&
+                            c.getUser().getVillage().getMandal() != null
+                            ? c.getUser().getVillage().getMandal().getName() : "N/A";
+                    rows.add(new String[]{
+                            String.valueOf(c.getId()),
+                            c.getType() != null ? c.getType() : "",
+                            c.getUser() != null && c.getUser().getVillage() != null ? c.getUser().getVillage().getName() : "",
+                            mandalName,
+                            c.getUser() != null ? c.getUser().getUsername() : "",
+                            c.getPriority() != null ? c.getPriority() : "",
+                            c.getCreatedAt() != null ? c.getCreatedAt().toString() : ""
+                    });
+                }
+            }
+            case "PENDING" -> {
+                columns = 3;
+                List<Village> pendingVillages = villageRepository.findAll().stream()
+                        .filter(v -> complaintRepository.countByUserVillage(v) == 0)
+                        .toList();
+                rows.add(new String[]{"Village Name", "Mandal Name", "Status"});
+                for (Village v : pendingVillages) {
+                    rows.add(new String[]{
+                            v.getName(),
+                            v.getMandal() != null ? v.getMandal().getName() : "N/A",
+                            "Pending"
+                    });
+                }
+            }
+            case "PENDING_LOCALITIES", "INACTIVE_LOCALITIES" -> {
+                columns = 5;
+                List<Village> allVillages = villageRepository.findAll();
+                rows.add(new String[]{"Locality Name", "Mandal Name", "Last Report Date", "Days Since Last Report", "Status"});
+                for (Village v : allVillages) {
+                    List<Complaint> vComplaints = complaintRepository.findByUser_Village_Id(v.getId());
+                    if (vComplaints.isEmpty()) {
+                        rows.add(new String[]{
+                                v.getName(),
+                                v.getMandal() != null ? v.getMandal().getName() : "N/A",
+                                "",
+                                "",
+                                "No Reports"
+                        });
+                    } else {
+                        LocalDateTime lastDate = vComplaints.get(0).getCreatedAt();
+                        long daysSince = java.time.temporal.ChronoUnit.DAYS.between(
+                                lastDate.toLocalDate(), java.time.LocalDate.now()
+                        );
+                        String status = "PENDING_LOCALITIES".equals(type.toUpperCase())
+                                ? (daysSince <= 14 ? "Active" : "Pending")
+                                : (daysSince <= 14 ? "Active" : "Inactive");
+                        rows.add(new String[]{
+                                v.getName(),
+                                v.getMandal() != null ? v.getMandal().getName() : "N/A",
+                                lastDate.toString(),
+                                String.valueOf(daysSince),
+                                status
+                        });
+                    }
+                }
+            }
+            default -> {
+                columns = 1;
+                rows.add(new String[]{"No data"});
+            }
+        }
+
+        com.lowagie.text.pdf.PdfPTable table = new com.lowagie.text.pdf.PdfPTable(columns);
+        table.setWidthPercentage(100);
+        table.setSpacingBefore(10f);
+        table.setSpacingAfter(10f);
+
+        com.lowagie.text.Font headerFont = new com.lowagie.text.Font(com.lowagie.text.Font.HELVETICA, 10, com.lowagie.text.Font.BOLD);
+        com.lowagie.text.Font bodyFont = new com.lowagie.text.Font(com.lowagie.text.Font.HELVETICA, 9, com.lowagie.text.Font.NORMAL);
+
+        String[] headers = rows.get(0);
+        for (String h : headers) {
+            table.addCell(new com.lowagie.text.Phrase(h, headerFont));
+        }
+
+        for (int i = 1; i < rows.size(); i++) {
+            String[] row = rows.get(i);
+            for (String cell : row) {
+                table.addCell(new com.lowagie.text.Phrase(cell != null ? cell : "", bodyFont));
+            }
+        }
+
+        document.add(table);
+        document.close();
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_PDF);
+        httpHeaders.setContentDispositionFormData("attachment", fileName + ".pdf");
+        httpHeaders.setContentLength(out.size());
+
+        return ResponseEntity.ok().headers(httpHeaders).body(out.toByteArray());
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/division/{id}/export/excel")
+    public ResponseEntity<byte[]> exportDivisionExcel(@PathVariable("id") Long id) throws Exception {
+        Division division = divisionRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Division not found: " + id));
+
+        List<Locality> localities = division.getLocalities();
+        localities.sort((a, b) -> {
+            String statusA = getLocalityStatus(a, new java.util.HashMap<>(), new java.util.HashMap<>());
+            String statusB = getLocalityStatus(b, new java.util.HashMap<>(), new java.util.HashMap<>());
+            int orderA = switch (statusA) { case "No Reports" -> 0; case "Pending" -> 1; case "Active" -> 2; default -> 3; };
+            int orderB = switch (statusB) { case "No Reports" -> 0; case "Pending" -> 1; case "Active" -> 2; default -> 3; };
+            return Integer.compare(orderA, orderB);
+        });
+
+        org.apache.poi.ss.usermodel.Workbook wb = new org.apache.poi.xssf.usermodel.XSSFWorkbook();
+        org.apache.poi.ss.usermodel.Sheet sheet = wb.createSheet(division.getName() + "_localities");
+
+        org.apache.poi.ss.usermodel.Row header = sheet.createRow(0);
+        String[] cols = {"Locality Name", "Last Submission", "Status", "Complaints"};
+        for (int i = 0; i < cols.length; i++) {
+            org.apache.poi.ss.usermodel.Cell cell = header.createCell(i);
+            cell.setCellValue(cols[i]);
+            cell.setCellStyle(getHeaderStyle(wb));
+        }
+
+        int rowIdx = 1;
+        for (Locality locality : localities) {
+            org.apache.poi.ss.usermodel.Row row = sheet.createRow(rowIdx++);
+            Village matchedVillage = villageRepository.findByName(locality.getName()).orElse(null);
+            List<Complaint> vComplaints = matchedVillage != null ? complaintRepository.findByUserVillage(matchedVillage) : List.of();
+            String lastSubmission = vComplaints.isEmpty() ? "" : vComplaints.get(0).getCreatedAt().toString();
+            String status = getLocalityStatus(locality, new java.util.HashMap<>(), new java.util.HashMap<>());
+            row.createCell(0).setCellValue(locality.getName());
+            row.createCell(1).setCellValue(lastSubmission);
+            row.createCell(2).setCellValue(status);
+            row.createCell(3).setCellValue(vComplaints.size());
+        }
+
+        for (int i = 0; i < cols.length; i++) {
+            sheet.setColumnWidth(i, 25 * 256);
+        }
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        wb.write(out);
+        wb.close();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", division.getName() + "_localities.xlsx");
+        headers.setContentLength(out.size());
+
+        return ResponseEntity.ok().headers(headers).body(out.toByteArray());
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/division/{id}/export/pdf")
+    public ResponseEntity<byte[]> exportDivisionPdf(@PathVariable("id") Long id) throws Exception {
+        Division division = divisionRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Division not found: " + id));
+
+        List<Locality> localities = division.getLocalities();
+        localities.sort((a, b) -> {
+            String statusA = getLocalityStatus(a, new java.util.HashMap<>(), new java.util.HashMap<>());
+            String statusB = getLocalityStatus(b, new java.util.HashMap<>(), new java.util.HashMap<>());
+            int orderA = switch (statusA) { case "No Reports" -> 0; case "Pending" -> 1; case "Active" -> 2; default -> 3; };
+            int orderB = switch (statusB) { case "No Reports" -> 0; case "Pending" -> 1; case "Active" -> 2; default -> 3; };
+            return Integer.compare(orderA, orderB);
+        });
+
+        com.lowagie.text.Document document = new com.lowagie.text.Document(com.lowagie.text.PageSize.A4);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        com.lowagie.text.pdf.PdfWriter.getInstance(document, out);
+        document.open();
+
+        com.lowagie.text.Font titleFont = new com.lowagie.text.Font(com.lowagie.text.Font.HELVETICA, 16, com.lowagie.text.Font.BOLD);
+        document.add(new com.lowagie.text.Paragraph("DIVISION: " + division.getName().toUpperCase(), titleFont));
+        document.add(new com.lowagie.text.Paragraph("Type: " + division.getType()));
+        document.add(new com.lowagie.text.Paragraph("Total Localities: " + localities.size()));
+        document.add(new com.lowagie.text.Paragraph(" "));
+
+        com.lowagie.text.pdf.PdfPTable table = new com.lowagie.text.pdf.PdfPTable(4);
+        table.setWidthPercentage(100);
+        table.setSpacingBefore(10f);
+        table.setSpacingAfter(10f);
+
+        com.lowagie.text.Font headerFont = new com.lowagie.text.Font(com.lowagie.text.Font.HELVETICA, 10, com.lowagie.text.Font.BOLD);
+        com.lowagie.text.Font bodyFont = new com.lowagie.text.Font(com.lowagie.text.Font.HELVETICA, 9, com.lowagie.text.Font.NORMAL);
+
+        table.addCell(new com.lowagie.text.Phrase("Locality Name", headerFont));
+        table.addCell(new com.lowagie.text.Phrase("Last Submission", headerFont));
+        table.addCell(new com.lowagie.text.Phrase("Status", headerFont));
+        table.addCell(new com.lowagie.text.Phrase("Complaints", headerFont));
+
+        for (Locality locality : localities) {
+            Village matchedVillage = villageRepository.findByName(locality.getName()).orElse(null);
+            List<Complaint> vComplaints = matchedVillage != null ? complaintRepository.findByUserVillage(matchedVillage) : List.of();
+            String lastSubmission = vComplaints.isEmpty() ? "" : vComplaints.get(0).getCreatedAt().toString();
+            String status = getLocalityStatus(locality, new java.util.HashMap<>(), new java.util.HashMap<>());
+
+            table.addCell(new com.lowagie.text.Phrase(locality.getName(), bodyFont));
+            table.addCell(new com.lowagie.text.Phrase(lastSubmission, bodyFont));
+            table.addCell(new com.lowagie.text.Phrase(status, bodyFont));
+            table.addCell(new com.lowagie.text.Phrase(String.valueOf(vComplaints.size()), bodyFont));
+        }
+
+        document.add(table);
+        document.close();
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_PDF);
+        httpHeaders.setContentDispositionFormData("attachment", division.getName() + "_localities.pdf");
         httpHeaders.setContentLength(out.size());
 
         return ResponseEntity.ok().headers(httpHeaders).body(out.toByteArray());

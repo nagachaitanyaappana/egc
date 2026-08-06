@@ -36,9 +36,14 @@ public class HomeController {
         return "login";
     }
 
+    @GetMapping("/access-denied")
+    public String accessDenied() {
+        return "access-denied";
+    }
+
     @PostMapping("/users")
     public String addUser(@RequestParam String username, @RequestParam String email,
-                          @RequestParam String password, @RequestParam(defaultValue = "USER") String role,
+                          @RequestParam String password, @RequestParam(defaultValue = "LOCALITY_USER") String role,
                           @RequestParam String villageName) {
         String encodedPassword = passwordEncoder.encode(password);
         Village village = villageRepository.findByName(villageName)

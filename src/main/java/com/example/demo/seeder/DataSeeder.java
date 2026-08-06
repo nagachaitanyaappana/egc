@@ -6,11 +6,13 @@ import com.example.demo.model.Locality;
 import com.example.demo.model.User;
 import com.example.demo.model.Complaint;
 import com.example.demo.model.Photo;
+import com.example.demo.model.Village;
 import com.example.demo.repository.DivisionRepository;
 import com.example.demo.repository.LocalityRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.ComplaintRepository;
 import com.example.demo.repository.PhotoRepository;
+import com.example.demo.repository.VillageRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,6 +35,7 @@ public class DataSeeder implements CommandLineRunner {
     private final UserRepository userRepository;
     private final ComplaintRepository complaintRepository;
     private final PhotoRepository photoRepository;
+    private final VillageRepository villageRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Value("${app.seed.demo-data:true}")
@@ -46,12 +49,14 @@ public class DataSeeder implements CommandLineRunner {
                       UserRepository userRepository,
                       ComplaintRepository complaintRepository,
                       PhotoRepository photoRepository,
+                      VillageRepository villageRepository,
                       PasswordEncoder passwordEncoder) {
         this.divisionRepository = divisionRepository;
         this.localityRepository = localityRepository;
         this.userRepository = userRepository;
         this.complaintRepository = complaintRepository;
         this.photoRepository = photoRepository;
+        this.villageRepository = villageRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -59,6 +64,7 @@ public class DataSeeder implements CommandLineRunner {
     public void run(String... args) throws Exception {
         ensureDivisionsExist();
         ensureLocalitiesExist();
+        ensureAdminUserExist();
 
         if (demoDataEnabled) {
             ensureDemoUsersExist();
@@ -125,6 +131,18 @@ public class DataSeeder implements CommandLineRunner {
         }
     }
 
+    private void ensureAdminUserExist() {
+        if (userRepository.findByUsername("admin").isEmpty()) {
+            User admin = new User();
+            admin.setUsername("admin");
+            admin.setEmail("admin@example.com");
+            admin.setPassword(passwordEncoder.encode("admin123"));
+            admin.setRole("ADMIN");
+            admin.setVillage(null);
+            userRepository.save(admin);
+        }
+    }
+
     private void ensureDemoUsersExist() {
         if (!userRepository.existsByIsDemo(true)) {
             List<Locality> localities = localityRepository.findAll();
@@ -139,8 +157,10 @@ public class DataSeeder implements CommandLineRunner {
                 user.setUsername(username);
                 user.setEmail(username + "@example.com");
                 user.setPassword(passwordEncoder.encode("password123"));
-                user.setRole("USER");
-                user.setVillage(null);
+                user.setRole("LOCALITY_USER");
+                Village village = villageRepository.findByName(locality.getName())
+                        .orElseGet(() -> villageRepository.save(new Village(locality.getName(), null)));
+                user.setVillage(village);
                 user.setDemo(true);
                 demoUsers.add(user);
             }
@@ -151,7 +171,7 @@ public class DataSeeder implements CommandLineRunner {
 
     private void ensureDemoComplaintsExist() {
         if (!complaintRepository.existsByIsDemo(true)) {
-            List<User> demoUsers = userRepository.findByRole("USER");
+            List<User> demoUsers = userRepository.findByRole("LOCALITY_USER");
             if (demoUsers.isEmpty()) {
                 return;
             }

@@ -22,8 +22,10 @@
                     <div class="subtitle">Village Report - <c:out value="${village.name}"/></div>
                 </div>
                 <ul class="nav-list">
-                    <li><a href="${pageContext.request.contextPath}/admin/dashboard">Home</a></li>
+                    <li><a href="${pageContext.request.contextPath}/admin/dashboard">Dashboard</a></li>
                     <li><a href="${pageContext.request.contextPath}/admin/reports" class="active">Reports</a></li>
+                    <li><a href="${pageContext.request.contextPath}/admin/complaints">Complaints</a></li>
+                    <li><a href="${pageContext.request.contextPath}/admin/localities">Localities</a></li>
                 </ul>
             </div>
             <div class="header-right">
@@ -60,16 +62,44 @@
         <c:forEach var="complaint" items="${complaints}">
             <div class="card form-card mb-3">
                 <div class="card-body">
-                    <h5 class="section-title">
-                        <i class="bi bi-person-circle"></i> <c:out value="${complaint.user.username}"/>
-                    </h5>
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="section-title mb-0">
+                            <i class="bi bi-person-circle"></i> <c:out value="${complaint.user.username}"/>
+                        </h5>
+                        <c:choose>
+                            <c:when test="${complaint.priority == 'LOW'}">
+                                <span class="priority-badge priority-low">Low</span>
+                            </c:when>
+                            <c:when test="${complaint.priority == 'MEDIUM'}">
+                                <span class="priority-badge priority-medium">Medium</span>
+                            </c:when>
+                            <c:when test="${complaint.priority == 'HIGH'}">
+                                <span class="priority-badge priority-high">High</span>
+                            </c:when>
+                            <c:when test="${complaint.priority == 'CRITICAL'}">
+                                <span class="priority-badge priority-critical">Critical</span>
+                            </c:when>
+                        </c:choose>
+                    </div>
                     <p class="text-muted mb-2">
-                        <strong>Submission:</strong>
+                        <strong>Complaint Type:</strong> <c:out value="${complaint.type}"/>
+                        <c:if test="${not empty complaint.otherType}">
+                            <span class="badge bg-secondary ms-2"><c:out value="${complaint.otherType}"/></span>
+                        </c:if>
+                    </p>
+                    <p class="text-muted mb-2">
+                        <strong>Locality:</strong> <c:out value="${complaint.user.village.name}"/>
+                    </p>
+                    <p class="text-muted mb-2">
+                        <strong>Submitted By:</strong> <c:out value="${complaint.user.username}"/>
+                    </p>
+                    <p class="mb-2">
+                        <strong>Description:</strong>
                         <div class="content-preview"><c:out value="${complaint.content}"/></div>
                     </p>
                     <p class="small text-muted mb-2">Submitted on <c:out value="${complaint.createdAt}"/></p>
                     <div>
-                        <strong class="text-primary">Photos:</strong>
+                        <strong class="text-primary">Images:</strong>
                         <div class="d-flex flex-wrap mt-2">
                             <c:forEach var="photo" items="${complaint.photos}">
                                 <img src="${pageContext.request.contextPath}/photos/${photo.id}"

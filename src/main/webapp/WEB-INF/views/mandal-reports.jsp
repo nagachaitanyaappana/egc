@@ -21,8 +21,10 @@
                     <div class="subtitle">Reports - <c:out value="${mandal.name}"/></div>
                 </div>
                 <ul class="nav-list">
-                    <li><a href="${pageContext.request.contextPath}/admin/dashboard">Home</a></li>
-                    <li><a href="${pageContext.request.contextPath}/admin/mandal/${mandal.id}/reports" class="active">Reports</a></li>
+                    <li><a href="${pageContext.request.contextPath}/admin/dashboard">Dashboard</a></li>
+                    <li><a href="${pageContext.request.contextPath}/admin/reports" class="active">Reports</a></li>
+                    <li><a href="${pageContext.request.contextPath}/admin/complaints">Complaints</a></li>
+                    <li><a href="${pageContext.request.contextPath}/admin/localities">Localities</a></li>
                 </ul>
             </div>
             <div class="header-right">
@@ -48,17 +50,17 @@
 
         <div class="row g-4 mb-4" style="display:flex; flex-wrap:wrap;">
             <div class="col-6">
-                <div class="stat-card stat-success" onclick="toggleTable('submittedTable')">
-                    <div class="stat-icon" style="color:#ffffff;"><i class="bi bi-check-circle-fill"></i></div>
-                    <div class="stat-value">${submittedCount}</div>
-                    <div class="stat-label">Villages Submitted</div>
+                <div class="stat-card" style="border-top: 4px solid #2563eb;">
+                    <div class="stat-icon" style="color:#2563eb;"><i class="bi bi-file-earmark-text"></i></div>
+                    <div class="stat-value">${totalComplaints}</div>
+                    <div class="stat-label">Total Complaints</div>
                 </div>
             </div>
             <div class="col-6">
-                <div class="stat-card stat-danger" onclick="toggleTable('pendingTable')">
-                    <div class="stat-icon" style="color:#ffffff;"><i class="bi bi-exclamation-circle-fill"></i></div>
-                    <div class="stat-value">${pendingCount}</div>
-                    <div class="stat-label">Pending Villages</div>
+                <div class="stat-card" style="border-top: 4px solid #dc2626;">
+                    <div class="stat-icon" style="color:#dc2626;"><i class="bi bi-exclamation-circle-fill"></i></div>
+                    <div class="stat-value">${pendingComplaints}</div>
+                    <div class="stat-label">Pending Complaints</div>
                 </div>
             </div>
         </div>
@@ -66,13 +68,14 @@
         <div id="submittedTable" class="detail-table">
             <div class="card form-card mb-3">
                 <div class="card-body">
-                    <h5 class="section-title"><i class="bi bi-check-circle-fill" style="color:#065f46;"></i> Submitted Villages</h5>
+                    <h5 class="section-title"><i class="bi bi-check-circle-fill" style="color:#2563eb;"></i> Submitted Villages</h5>
                     <div class="table-responsive">
                         <table class="data-table">
                             <thead>
                                 <tr>
                                     <th>#</th>
                                     <th>Village Name</th>
+                                    <th>Last Submission</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -80,11 +83,20 @@
                                     <tr>
                                         <td>${loop.index + 1}</td>
                                         <td><c:out value="${village.name}"/></td>
+                                        <td>
+                                            <c:set var="complaints" value="${complainMap[village.id]}"/>
+                                            <c:choose>
+                                                <c:when test="${not empty complaints}">
+                                                    <c:out value="${complaints[0].createdAt}"/>
+                                                </c:when>
+                                                <c:otherwise>N/A</c:otherwise>
+                                            </c:choose>
+                                        </td>
                                     </tr>
                                 </c:forEach>
                                 <c:if test="${empty submitted}">
                                     <tr>
-                                        <td colspan="2" class="text-center">No villages have submitted yet.</td>
+                                        <td colspan="3" class="text-center">No villages have submitted yet.</td>
                                     </tr>
                                 </c:if>
                             </tbody>
@@ -97,13 +109,14 @@
         <div id="pendingTable" class="detail-table">
             <div class="card form-card mb-3">
                 <div class="card-body">
-                    <h5 class="section-title"><i class="bi bi-exclamation-circle-fill" style="color:#991b1b;"></i> Pending Villages</h5>
+                    <h5 class="section-title"><i class="bi bi-exclamation-circle-fill" style="color:#dc2626;"></i> Pending Villages</h5>
                     <div class="table-responsive">
                         <table class="data-table">
                             <thead>
                                 <tr>
                                     <th>#</th>
                                     <th>Village Name</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -111,11 +124,14 @@
                                     <tr>
                                         <td>${loop.index + 1}</td>
                                         <td><c:out value="${village.name}"/></td>
+                                        <td>
+                                            <span class="locality-badge locality-no-reports">No Reports</span>
+                                        </td>
                                     </tr>
                                 </c:forEach>
                                 <c:if test="${empty notSubmitted}">
                                     <tr>
-                                        <td colspan="2" class="text-center">All villages have submitted.</td>
+                                        <td colspan="3" class="text-center">All villages have submitted.</td>
                                     </tr>
                                 </c:if>
                             </tbody>

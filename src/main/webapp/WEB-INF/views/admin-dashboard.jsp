@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Mandal Wise Reports</title>
+    <title>Dashboard</title>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="${pageContext.request.contextPath}/resources/css/bootstrap.min.css" rel="stylesheet"/>
@@ -18,11 +18,13 @@
             <div class="header-center">
                 <div class="brand-center">
                     <div class="brand">EGC Admin</div>
-                    <div class="subtitle">Mandal Wise Reports</div>
+                    <div class="subtitle">Welcome, Admin</div>
                 </div>
                 <ul class="nav-list">
-                    <li><a href="${pageContext.request.contextPath}/admin/dashboard" class="active">Home</a></li>
+                    <li><a href="${pageContext.request.contextPath}/admin/dashboard" class="active">Dashboard</a></li>
                     <li><a href="${pageContext.request.contextPath}/admin/reports">Reports</a></li>
+                    <li><a href="${pageContext.request.contextPath}/admin/complaints">Complaints</a></li>
+                    <li><a href="${pageContext.request.contextPath}/admin/localities">Localities</a></li>
                 </ul>
             </div>
             <div class="header-right">
@@ -36,33 +38,41 @@
     </header>
 
     <div class="page-content container mt-4 mb-5">
-
-        <div class="d-flex justify-content-between align-items-end mb-3">
-            <div>
-                <h1 class="section-title">Mandal Wise Reports</h1>
-                <p class="text-muted mb-0">Select a mandal to view reports.</p>
-            </div>
-            <div class="text-end text-muted small">
-                Total Mandals: <strong>${mandals.size()}</strong>
-            </div>
+        <div class="text-center mb-5">
+            <h1 class="display-4 fw-bold" style="margin-top: 2rem; margin-bottom: 1rem;">Welcome, Admin</h1>
+            <p class="lead text-muted mb-0" style="font-size: 1.1rem;">
+                Government Child Welfare Monitoring System
+            </p>
+            <p class="text-muted" style="max-width: 600px; margin: 1rem auto 0;">
+                Monitor complaints, locality reports and district activity from one place.
+            </p>
         </div>
 
-        <div class="row g-3" style="display:flex; flex-wrap:wrap;">
-            <c:forEach var="mandal" items="${mandals}" varStatus="loop">
-                <div class="col-md-3 col-sm-4 col-6">
-                <a href="${pageContext.request.contextPath}/admin/mandal/${mandal.id}" class="text-decoration-none d-block">
-                     <div class="stat-card stat-color-${loop.index % 20}">
-                        <div class="stat-value">${loop.index + 1}</div>
-                        <div class="stat-label">
-                            <c:out value="${mandal.name}"/>
-                        </div>
-                        <div class="small text-muted">
-                            <i class="bi bi-geo-alt"></i> <c:out value="${mandal.district}"/>
-                        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4">
+                <a href="${pageContext.request.contextPath}/admin/reports" class="text-decoration-none d-block">
+                    <div class="stat-card" style="background:#2563eb; color:#fff; border-top:none; text-align:center; padding:2.5rem;">
+                        <i class="bi bi-bar-chart" style="font-size:2.5rem; color:#fff;"></i>
+                        <div class="stat-label" style="color:#fff; font-size:1.2rem; margin-top:0.75rem; font-weight:600;">View Reports</div>
                     </div>
                 </a>
-                </div>
-            </c:forEach>
+            </div>
+            <div class="col-md-4">
+                <a href="${pageContext.request.contextPath}/admin/complaints" class="text-decoration-none d-block">
+                    <div class="stat-card" style="background:#dc2626; color:#fff; border-top:none; text-align:center; padding:2.5rem;">
+                        <i class="bi bi-file-earmark-text" style="font-size:2.5rem; color:#fff;"></i>
+                        <div class="stat-label" style="color:#fff; font-size:1.2rem; margin-top:0.75rem; font-weight:600;">View Complaints</div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="${pageContext.request.contextPath}/admin/localities" class="text-decoration-none d-block">
+                    <div class="stat-card" style="background:#f97316; color:#fff; border-top:none; text-align:center; padding:2.5rem;">
+                        <i class="bi bi-geo-alt" style="font-size:2.5rem; color:#fff;"></i>
+                        <div class="stat-label" style="color:#fff; font-size:1.2rem; margin-top:0.75rem; font-weight:600;">View Localities</div>
+                    </div>
+                </a>
+            </div>
         </div>
     </div>
 

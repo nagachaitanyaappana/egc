@@ -198,7 +198,7 @@ public class DataLoader {
                         String username = village.getName().replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
                         if (username.length() > 30) username = username.substring(0, 30);
                         String email = username + "@example.com";
-                        userRepository.save(new User(username, email, passwordEncoder.encode("password123"), "USER", village));
+                        userRepository.save(new User(username, email, passwordEncoder.encode("password123"), "LOCALITY_USER", village));
                     }
                 }
             }
