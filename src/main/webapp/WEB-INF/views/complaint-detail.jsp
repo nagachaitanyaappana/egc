@@ -11,6 +11,7 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/global.css">
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
 <div class="page-wrap">
     <header class="app-header">
         <div class="header-inner">
@@ -21,8 +22,8 @@
                     <div class="subtitle">Complaint Details</div>
                 </div>
                 <ul class="nav-list">
-                    <li><a href="${pageContext.request.contextPath}/complaint">Submit Complaint</a></li>
-                    <li><a href="${pageContext.request.contextPath}/complaints/my" class="active">My Complaints</a></li>
+                    <li><a href="${pageContext.request.contextPath}/complaint"><i class="bi bi-plus-circle"></i> Submit Complaint</a></li>
+                    <li><a href="${pageContext.request.contextPath}/complaints/my" class="active"><i class="bi bi-list-ul"></i> My Complaints</a></li>
                 </ul>
             </div>
             <div class="header-right">
@@ -35,7 +36,7 @@
         </div>
     </header>
 
-    <div class="page-content container mt-4 mb-5">
+    <div id="main-content" class="page-content container mt-4 mb-5">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2 class="section-title"><i class="bi bi-file-earmark-text"></i> Complaint Details</h2>
             <a href="${pageContext.request.contextPath}/complaints/my" class="btn btn-secondary btn-sm">&larr; Back to My Complaints</a>
@@ -155,10 +156,11 @@
     </div>
 
     <footer class="app-footer" style="background:var(--accent); color:rgba(255,255,255,0.85); padding:1.2rem 0; text-align:center; font-size:0.85rem;">
-        &copy; 2025 EGC Administration. Government of Andhra Pradesh. All rights reserved.
+        EGC - Child Welfare Monitoring System<br>Government of Andhra Pradesh<br>Version 1.0 EGC - Child Welfare Monitoring System<br>Government of Andhra Pradesh<br>Version 1.0 &copy; 2025 EGC Administration. Government of Andhra Pradesh. All rights reserved.copy; 2026copy; 2026
     </footer>
 </div>
 
+    <script>
 <script>
     const photoUrls = [
         <c:forEach var="photo" items="${complaint.photos}" varStatus="loop">
@@ -272,5 +274,49 @@
             });
     }
 </script>
+    <div class="toast-container" id="toastContainer"></div>
+    <script>
+        function showToast(message, type) {
+            type = type || 'info';
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+
+            const iconMap = {
+                success: 'bi-check-circle-fill',
+                error: 'bi-exclamation-triangle-fill',
+                warning: 'bi-exclamation-circle-fill',
+                info: 'bi-info-circle-fill'
+            };
+
+            const toast = document.createElement('div');
+            toast.className = 'toast ' + type;
+            toast.innerHTML = '<i class="bi ' + iconMap[type] + '"></i>' +
+                '<div class="toast-content">' + message + '</div>' +
+                '<button class="toast-close" onclick="this.parentElement.remove()">&times;</button>';
+
+            container.appendChild(toast);
+
+            setTimeout(function() {
+                toast.classList.add('hiding');
+                setTimeout(function() {
+                    if (toast.parentElement) {
+                        toast.remove();
+                    }
+                }, 300);
+            }, 4000);
+        }
+
+        function setLoading(buttonId, isLoading) {
+            const btn = document.getElementById(buttonId);
+            if (!btn) return;
+            if (isLoading) {
+                btn.classList.add('loading');
+                btn.disabled = true;
+            } else {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            }
+        }
+    </script>
 </body>
 </html>

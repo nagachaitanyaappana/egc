@@ -10,7 +10,8 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/global.css">
 </head>
 <body>
-<div class="page-wrap">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+<div id="main-content" class="page-wrap">
     <header class="app-header">
         <div class="header-inner">
             <div class="header-left"></div>
@@ -29,21 +30,40 @@
     </header>
 
     <div class="page-content container mt-4 mb-5">
-        <div class="card form-card">
-            <div class="card-body text-center">
-                <i class="bi bi-exclamation-triangle-fill" style="font-size: 4rem; color: #dc2626;"></i>
-                <h1 class="section-title mt-3">Access Denied</h1>
-                <p class="text-muted">You do not have permission to view this resource.</p>
-                <a href="${pageContext.request.contextPath}/complaints/my" class="btn btn-primary">
-                    <i class="bi bi-arrow-left"></i> Back to My Complaints
+        <div class="error-page">
+            <i class="bi bi-exclamation-triangle-fill error-code"></i>
+            <h1 class="error-title">Access Denied</h1>
+            <p class="error-message">You do not have permission to view this resource. Please contact your administrator if you believe this is an error.</p>
+            <div class="error-actions">
+                <a href="${pageContext.request.contextPath}/admin/dashboard" class="btn btn-primary">
+                    <i class="bi bi-speedometer2"></i> Go to Dashboard
                 </a>
+                <button onclick="history.back()" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Go Back
+                </button>
             </div>
         </div>
     </div>
 
-    <footer class="app-footer" style="background:var(--accent); color:rgba(255,255,255,0.85); padding:1.2rem 0; text-align:center; font-size:0.85rem;">
-        &copy; 2025 EGC Administration. Government of Andhra Pradesh. All rights reserved.
+    <footer class="app-footer">
+        EGC - Child Welfare Monitoring System<br>
+        Government of Andhra Pradesh<br>
+        Version 1.0 &copy; 2026
     </footer>
 </div>
+    <div class="toast-container" id="toastContainer"></div>
+    <script>
+        function showToast(message, type) {
+            type = type || 'info';
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+            const iconMap = { success: 'bi-check-circle-fill', error: 'bi-exclamation-triangle-fill', warning: 'bi-exclamation-circle-fill', info: 'bi-info-circle-fill' };
+            const toast = document.createElement('div');
+            toast.className = 'toast ' + type;
+            toast.innerHTML = '<i class="bi ' + iconMap[type] + '"></i><div class="toast-content">' + message + '</div><button class="toast-close" onclick="this.parentElement.remove()">&times;</button>';
+            container.appendChild(toast);
+            setTimeout(function() { toast.classList.add('hiding'); setTimeout(function() { if (toast.parentElement) toast.remove(); }, 300); }, 4000);
+        }
+    </script>
 </body>
 </html>

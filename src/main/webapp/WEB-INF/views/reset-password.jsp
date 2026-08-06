@@ -29,6 +29,7 @@
     </style>
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
 <div class="box">
     <h2>Reset Password</h2>
 
@@ -66,5 +67,49 @@
         <a href="${pageContext.request.contextPath}/login">Back to Login</a>
     </p>
 </div>
+    <div class="toast-container" id="toastContainer"></div>
+    <script>
+        function showToast(message, type) {
+            type = type || 'info';
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+
+            const iconMap = {
+                success: 'bi-check-circle-fill',
+                error: 'bi-exclamation-triangle-fill',
+                warning: 'bi-exclamation-circle-fill',
+                info: 'bi-info-circle-fill'
+            };
+
+            const toast = document.createElement('div');
+            toast.className = 'toast ' + type;
+            toast.innerHTML = '<i class="bi ' + iconMap[type] + '"></i>' +
+                '<div class="toast-content">' + message + '</div>' +
+                '<button class="toast-close" onclick="this.parentElement.remove()">&times;</button>';
+
+            container.appendChild(toast);
+
+            setTimeout(function() {
+                toast.classList.add('hiding');
+                setTimeout(function() {
+                    if (toast.parentElement) {
+                        toast.remove();
+                    }
+                }, 300);
+            }, 4000);
+        }
+
+        function setLoading(buttonId, isLoading) {
+            const btn = document.getElementById(buttonId);
+            if (!btn) return;
+            if (isLoading) {
+                btn.classList.add('loading');
+                btn.disabled = true;
+            } else {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            }
+        }
+    </script>
 </body>
 </html>

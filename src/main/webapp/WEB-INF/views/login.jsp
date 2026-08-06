@@ -10,6 +10,7 @@
     <link href="${pageContext.request.contextPath}/resources/css/bootstrap-icons.css" rel="stylesheet"/>
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
 
 <div class="limiter">
     <div class="container-login100">
@@ -152,5 +153,6 @@
         }
     })();
 </script>
+    <div class="toast-container" id="toastContainer"></div>
 </body>
 </html>
