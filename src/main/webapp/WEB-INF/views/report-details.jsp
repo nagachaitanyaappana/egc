@@ -184,7 +184,11 @@
                     </c:when>
 
                     <c:otherwise>
-                        <div class="page-alert page-alert-info show">No data available for this report.</div>
+                        <div class="empty-state">
+                                <span class="empty-state-icon"><i class="bi bi-bar-chart"></i></span>
+                                <div class="empty-state-title">No data available</div>
+                                <div class="empty-state-text">There is no data available for this report type.</div>
+                            </div>
                     </c:otherwise>
                 </c:choose>
             </div>

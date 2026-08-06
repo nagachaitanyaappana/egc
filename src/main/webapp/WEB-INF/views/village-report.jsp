@@ -24,7 +24,7 @@
                 </div>
                 <ul class="nav-list">
                     <li><a href="${pageContext.request.contextPath}/admin/dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
-                    <li><a href="${pageContext.request.contextPath}/admin/reports" class="active">Reports</a></li>
+                    <li><a href="${pageContext.request.contextPath}/admin/reports" class="active"><i class="bi bi-bar-chart"></i> Reports</a></li>
                     <li><a href="${pageContext.request.contextPath}/admin/complaints"><i class="bi bi-file-earmark-text"></i> Complaints</a></li>
                     <li><a href="${pageContext.request.contextPath}/admin/localities"><i class="bi bi-geo-alt"></i> Localities</a></li>
                 </ul>
@@ -107,7 +107,12 @@
                                      class="photo-thumb" alt="submission photo"
                                      onclick="openLightbox(this.src)"/>
                             </c:forEach>
-                            <c:if test="${empty complaint.photos}">None</c:if>
+                            <c:if test="${empty complaint.photos}">
+                                <div class="empty-state" style="padding:1.5rem;">
+                                    <span class="empty-state-icon" style="font-size:2rem;"><i class="bi bi-image"></i></span>
+                                    <div class="empty-state-text">No images uploaded</div>
+                                </div>
+                            </c:if>
                         </div>
                     </div>
                 </div>
@@ -115,7 +120,11 @@
         </c:forEach>
 
         <c:if test="${empty complaints}">
-            <div class="page-alert page-alert-info show">No submissions yet.</div>
+            <div class="empty-state">
+                <span class="empty-state-icon"><i class="bi bi-inbox"></i></span>
+                <div class="empty-state-title">No submissions yet</div>
+                <div class="empty-state-text">This village has not submitted any complaints yet.</div>
+            </div>
         </c:if>
     </div>
 

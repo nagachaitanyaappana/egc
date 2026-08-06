@@ -85,7 +85,11 @@
             <div class="card-body">
                 <c:choose>
                     <c:when test="${empty complaints}">
-                        <div class="page-alert page-alert-info show">No complaints found.</div>
+                        <div class="empty-state">
+                                <span class="empty-state-icon"><i class="bi bi-inbox"></i></span>
+                                <div class="empty-state-title">No complaints found</div>
+                                <div class="empty-state-text">You have not submitted any complaints yet.</div>
+                            </div>
                     </c:when>
                     <c:otherwise>
                         <div class="table-responsive">

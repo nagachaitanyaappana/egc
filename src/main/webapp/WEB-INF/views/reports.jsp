@@ -285,7 +285,11 @@
                 <h3 class="section-title"><i class="bi bi-exclamation-triangle-fill" style="color:#7f1d1d;"></i> Recent Critical Complaints</h3>
                 <c:choose>
                     <c:when test="${empty recentCritical}">
-                        <div class="page-alert page-alert-info show">No critical complaints found.</div>
+                        <div class="empty-state">
+                                <span class="empty-state-icon"><i class="bi bi-shield-check"></i></span>
+                                <div class="empty-state-title">No critical complaints</div>
+                                <div class="empty-state-text">Great! There are no critical complaints at this time.</div>
+                            </div>
                     </c:when>
                     <c:otherwise>
                         <div class="table-responsive">

@@ -26,7 +26,7 @@
                     <li><a href="${pageContext.request.contextPath}/admin/dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
                     <li><a href="${pageContext.request.contextPath}/admin/reports"><i class="bi bi-bar-chart"></i> Reports</a></li>
                     <li><a href="${pageContext.request.contextPath}/admin/complaints"><i class="bi bi-file-earmark-text"></i> Complaints</a></li>
-                    <li><a href="${pageContext.request.contextPath}/admin/localities" class="active">Localities</a></li>
+                    <li><a href="${pageContext.request.contextPath}/admin/localities" class="active"><i class="bi bi-geo-alt"></i> Localities</a></li>
                 </ul>
             </div>
             <div class="header-right">
@@ -118,7 +118,11 @@
                 </h3>
                 <c:choose>
                     <c:when test="${empty localities}">
-                        <div class="page-alert page-alert-info show">No localities found in this division.</div>
+                        <div class="empty-state">
+                                <span class="empty-state-icon"><i class="bi bi-geo-alt"></i></span>
+                                <div class="empty-state-title">No localities found</div>
+                                <div class="empty-state-text">This division does not have any localities registered yet.</div>
+                            </div>
                     </c:when>
                     <c:otherwise>
                         <div class="row g-3" style="display:flex; flex-wrap:wrap;">
