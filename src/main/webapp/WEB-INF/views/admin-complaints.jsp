@@ -77,23 +77,85 @@
                             </c:forEach>
                         </select>
                     </div>
-                    <div class="col-md-12 d-flex justify-content-end">
-                        <button type="submit" class="btn btn-primary me-2">
-                            <i class="bi bi-search"></i> Search
+
+                    <div class="col-12">
+                        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="collapse" data-bs-target="#advancedFilters" aria-expanded="true">
+                            <i class="bi bi-funnel"></i> Advanced Filters
                         </button>
-                        <a href="${pageContext.request.contextPath}/admin/complaints" class="btn btn-secondary">
-                            <i class="bi bi-arrow-counterclockwise"></i> Reset
-                        </a>
+                    </div>
+
+                    <div class="col-12 collapse show" id="advancedFilters">
+                        <div class="card bg-light mt-3">
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-md-3">
+                                        <label for="complaintId" class="form-label">Complaint ID</label>
+                                        <input type="text" class="form-control" id="complaintId" name="complaintId" value="${complaintId != null ? complaintId : ''}" placeholder="e.g. 123"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="submittedBy" class="form-label">Submitted By</label>
+                                        <input type="text" class="form-control" id="submittedBy" name="submittedBy" value="${submittedBy != null ? submittedBy : ''}" placeholder="Username"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="dateFrom" class="form-label">Date From</label>
+                                        <input type="date" class="form-control" id="dateFrom" name="dateFrom" value="${dateFrom != null ? dateFrom : ''}"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="dateTo" class="form-label">Date To</label>
+                                        <input type="date" class="form-control" id="dateTo" name="dateTo" value="${dateTo != null ? dateTo : ''}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 d-flex justify-content-between">
+                        <div>
+                            <c:if test="${not empty activeFilters}">
+                                <a href="${pageContext.request.contextPath}/admin/complaints" class="btn btn-outline-danger btn-sm">
+                                    <i class="bi bi-x-circle"></i> Clear Filters
+                                </a>
+                            </c:if>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-primary me-2">
+                                <i class="bi bi-search"></i> Apply Filters
+                            </button>
+                            <a href="${pageContext.request.contextPath}/admin/complaints" class="btn btn-secondary">
+                                <i class="bi bi-arrow-counterclockwise"></i> Reset
+                            </a>
+                        </div>
                     </div>
                 </form>
             </div>
         </div>
 
+        <c:if test="${not empty activeFilters}">
+            <div class="alert alert-info py-2">
+                <strong>Showing:</strong> ${complaints.size()} Complaints
+                <c:forEach var="filter" items="${activeFilters}">
+                    <span class="badge bg-primary ms-2">${filter}</span>
+                </c:forEach>
+            </div>
+        </c:if>
+        <c:if test="${empty activeFilters}">
+            <div class="alert alert-info py-2">
+                <strong>Showing:</strong> ${complaints.size()} Complaints
+            </div>
+        </c:if>
+
         <div class="card form-card">
             <div class="card-body">
                 <c:choose>
                     <c:when test="${empty complaints}">
-                        <div class="page-alert page-alert-info show">No complaints found.</div>
+                        <div class="text-center py-5">
+                            <i class="bi bi-inbox" style="font-size:3rem; color:#ccc;"></i>
+                            <h4 class="mt-3 text-muted">No matching complaints found.</h4>
+                            <p class="text-muted">Try changing your filters.</p>
+                            <a href="${pageContext.request.contextPath}/admin/complaints" class="btn btn-primary">
+                                <i class="bi bi-arrow-counterclockwise"></i> Clear Filters
+                            </a>
+                        </div>
                     </c:when>
                     <c:otherwise>
                         <div class="table-responsive">

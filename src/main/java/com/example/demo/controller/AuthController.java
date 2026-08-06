@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Map;
@@ -41,6 +42,7 @@ public class AuthController {
     @PostMapping("/login")
     @ResponseBody
     public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest request,
+                                                     HttpServletRequest httpRequest,
                                                      HttpServletResponse response) {
         try {
             authenticationManager.authenticate(
@@ -55,7 +57,7 @@ public class AuthController {
 
         jakarta.servlet.http.Cookie cookie = new jakarta.servlet.http.Cookie("token", token);
         cookie.setHttpOnly(true);
-        cookie.setSecure(true);
+        cookie.setSecure(httpRequest.isSecure());
         cookie.setPath("/");
         cookie.setMaxAge((int) (expirationMs / 1000));
         response.addCookie(cookie);
@@ -68,6 +70,7 @@ public class AuthController {
 
     @PostMapping("/logout")
     public String logout(@RequestHeader(value = "Authorization", required = false) String authHeader,
+                         HttpServletRequest request,
                          HttpServletResponse response) {
         String token = null;
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -81,7 +84,7 @@ public class AuthController {
 
         jakarta.servlet.http.Cookie cookie = new jakarta.servlet.http.Cookie("token", null);
         cookie.setHttpOnly(true);
-        cookie.setSecure(true);
+        cookie.setSecure(request.isSecure());
         cookie.setPath("/");
         cookie.setMaxAge(0);
         response.addCookie(cookie);

@@ -78,11 +78,37 @@
         <div class="card form-card mb-4">
             <div class="card-body">
                 <form method="get" action="${pageContext.request.contextPath}/admin/localities" class="row g-3">
-                    <div class="col-md-8">
-                        <label for="search" class="form-label">Search Divisions or Localities</label>
-                        <input type="text" class="form-control" id="search" name="search" value="${search != null ? search : ''}" placeholder="e.g. Karapa or Vakada"/>
+                    <div class="col-md-3">
+                        <label for="divisionType" class="form-label">Division Type</label>
+                        <select class="form-select" id="divisionType" name="divisionType">
+                            <option value="">All Types</option>
+                            <c:forEach var="type" items="${divisionTypes}">
+                                <option value="${type}" ${selectedDivisionType == type ? 'selected' : ''}>
+                                    <c:choose>
+                                        <c:when test="${type == 'MANDAL'}">Mandal</c:when>
+                                        <c:when test="${type == 'MUNICIPALITY'}">Municipality</c:when>
+                                        <c:when test="${type == 'CORPORATION'}">Corporation</c:when>
+                                        <c:when test="${type == 'NAGAR_PANCHAYAT'}">Nagar Panchayat</c:when>
+                                        <c:otherwise><c:out value="${type}"/></c:otherwise>
+                                    </c:choose>
+                                </option>
+                            </c:forEach>
+                        </select>
                     </div>
-                    <div class="col-md-4 d-flex align-items-end">
+                    <div class="col-md-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-select" id="status" name="status">
+                            <option value="ALL" ${selectedStatus == 'ALL' ? 'selected' : ''}>All</option>
+                            <option value="Active" ${selectedStatus == 'Active' ? 'selected' : ''}>Active</option>
+                            <option value="Pending" ${selectedStatus == 'Pending' ? 'selected' : ''}>Pending</option>
+                            <option value="No Reports" ${selectedStatus == 'No Reports' ? 'selected' : ''}>No Reports</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="search" class="form-label">Search</label>
+                        <input type="text" class="form-control" id="search" name="search" value="${search != null ? search : ''}" placeholder="Division name or locality name..."/>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
                         <button type="submit" class="btn btn-primary me-2">
                             <i class="bi bi-search"></i> Search
                         </button>
@@ -94,9 +120,11 @@
             </div>
         </div>
 
+        <c:set var="hasAnyDivisions" value="false"/>
         <c:forEach var="type" items="${divisionTypes}">
             <c:set var="divisions" value="${groupedDivisions[type]}"/>
             <c:if test="${not empty divisions}">
+                <c:set var="hasAnyDivisions" value="true"/>
                 <h3 class="section-title mb-3">
                     <c:choose>
                         <c:when test="${type == 'MANDAL'}">Mandals</c:when>
@@ -126,6 +154,17 @@
                 </div>
             </c:if>
         </c:forEach>
+
+        <c:if test="${not hasAnyDivisions}">
+            <div class="text-center py-5">
+                <i class="bi bi-search" style="font-size:3rem; color:#ccc;"></i>
+                <h4 class="mt-3 text-muted">No matching divisions found.</h4>
+                <p class="text-muted">Try changing your filters.</p>
+                <a href="${pageContext.request.contextPath}/admin/localities" class="btn btn-primary">
+                    <i class="bi bi-arrow-counterclockwise"></i> Clear Filters
+                </a>
+            </div>
+        </c:if>
     </div>
 
     <footer class="app-footer" style="background:var(--accent); color:rgba(255,255,255,0.85); padding:1.2rem 0; text-align:center; font-size:0.85rem;">
