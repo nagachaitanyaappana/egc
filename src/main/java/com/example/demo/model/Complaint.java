@@ -18,10 +18,19 @@ public class Complaint {
     @Column(length = 4000)
     private String content;
 
+    @Column(length = 50)
+    private String type;
+
+    @Column(length = 200)
+    private String otherType;
+
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "complaint", cascade = CascadeType.ALL)
     private List<Photo> photos = new ArrayList<>();
+
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean isDemo = false;
 
     // Constructors
     public Complaint() {}
@@ -56,6 +65,22 @@ public class Complaint {
         this.content = content;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getOtherType() {
+        return otherType;
+    }
+
+    public void setOtherType(String otherType) {
+        this.otherType = otherType;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -70,5 +95,13 @@ public class Complaint {
 
     public void setPhotos(List<Photo> photos) {
         this.photos = photos;
+    }
+
+    public boolean isDemo() {
+        return isDemo;
+    }
+
+    public void setDemo(boolean demo) {
+        isDemo = demo;
     }
 }

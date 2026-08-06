@@ -1,0 +1,192 @@
+[
+  {
+    "code": "kakinada-town",
+    "divisionCode": "kakinada-urban",
+    "name": "Kakinada Town"
+  },
+  {
+    "code": "pithapuram-road",
+    "divisionCode": "kakinada-urban",
+    "name": "Pithapuram Road"
+  },
+  {
+    "code": "tower-street",
+    "divisionCode": "kakinada-urban",
+    "name": "Tower Street"
+  },
+  {
+    "code": "prakasam-nagar",
+    "divisionCode": "kakinada-urban",
+    "name": "Prakasam Nagar"
+  },
+  {
+    "code": "gandhi-nagar",
+    "divisionCode": "kakinada-urban",
+    "name": "Gandhi Nagar"
+  },
+  {
+    "code": "suryaraopeta",
+    "divisionCode": "kakinada-urban",
+    "name": "Suryaraopeta"
+  },
+  {
+    "code": "ramaraopet",
+    "divisionCode": "kakinada-urban",
+    "name": "Ramaraopet"
+  },
+  {
+    "code": "sainagar",
+    "divisionCode": "kakinada-urban",
+    "name": "Sainagar"
+  },
+  {
+    "code": "jagannaickpur",
+    "divisionCode": "kakinada-urban",
+    "name": "Jagannaickpur"
+  },
+  {
+    "code": "kakinada-port",
+    "divisionCode": "kakinada-urban",
+    "name": "Kakinada Port"
+  },
+  {
+    "code": "karapa-village",
+    "divisionCode": "karapa",
+    "name": "Karapa Village"
+  },
+  {
+    "code": "vakada",
+    "divisionCode": "karapa",
+    "name": "Vakada"
+  },
+  {
+    "code": "gurajada",
+    "divisionCode": "karapa",
+    "name": "Gurajada"
+  },
+  {
+    "code": "panduru",
+    "divisionCode": "karapa",
+    "name": "Panduru"
+  },
+  {
+    "code": "peddapuram-village",
+    "divisionCode": "peddapuram",
+    "name": "Peddapuram Village"
+  },
+  {
+    "code": "kudupuram",
+    "divisionCode": "peddapuram",
+    "name": "Kudupuram"
+  },
+  {
+    "code": "rayavaram",
+    "divisionCode": "peddapuram",
+    "name": "Rayavaram"
+  },
+  {
+    "code": "kotipalli",
+    "divisionCode": "peddapuram",
+    "name": "Kotipalli"
+  },
+  {
+    "code": "samalkota-town",
+    "divisionCode": "samalkota",
+    "name": "Samalkota Town"
+  },
+  {
+    "code": "sarpavaram",
+    "divisionCode": "samalkota",
+    "name": "Sarpavaram"
+  },
+  {
+    "code": "mummidivaram",
+    "divisionCode": "samalkota",
+    "name": "Mummidivaram"
+  },
+  {
+    "code": "pithapuram-village",
+    "divisionCode": "pithapuram",
+    "name": "Pithapuram Village"
+  },
+  {
+    "code": "sankhavaram",
+    "divisionCode": "pithapuram",
+    "name": "Sankhavaram"
+  },
+  {
+    "code": "thondangi",
+    "divisionCode": "pithapuram",
+    "name": "Thondangi"
+  },
+  {
+    "code": "gollaprolu-village",
+    "divisionCode": "gollaprolu",
+    "name": "Gollaprolu Village"
+  },
+  {
+    "code": "bikkavolu",
+    "divisionCode": "gollaprolu",
+    "name": "Bikkavolu"
+  },
+  {
+    "code": "madhavaram",
+    "divisionCode": "gollaprolu",
+    "name": "Madhavaram"
+  },
+  {
+    "code": "prathipadu-village",
+    "divisionCode": "prathipadu",
+    "name": "Prathipadu Village"
+  },
+  {
+    "code": "chintalapudi",
+    "divisionCode": "prathipadu",
+    "name": "Chintalapudi"
+  },
+  {
+    "code": "kothapalle-village",
+    "divisionCode": "kothapalle",
+    "name": "Kothapalle Village"
+  },
+  {
+    "code": "gangavaram",
+    "divisionCode": "kothapalle",
+    "name": "Gangavaram"
+  },
+  {
+    "code": "yeleswaram",
+    "divisionCode": "kothapalle",
+    "name": "Yeleswaram"
+  },
+  {
+    "code": "kakinada-nagar",
+    "divisionCode": "kakinada-nagar-panchayat",
+    "name": "Kakinada Nagar"
+  },
+  {
+    "code": "peddapuram-nagar",
+    "divisionCode": "kakinada-nagar-panchayat",
+    "name": "Peddapuram Nagar"
+  },
+  {
+    "code": "samalkota-nagar",
+    "divisionCode": "kakinada-nagar-panchayat",
+    "name": "Samalkota Nagar"
+  },
+  {
+    "code": "kakinada-rural-village",
+    "divisionCode": "kakinada-rural",
+    "name": "Kakinada Rural Village"
+  },
+  {
+    "code": "kakinada-central",
+    "divisionCode": "kakinada-rural",
+    "name": "Kakinada Central"
+  },
+  {
+    "code": "kakinada-east",
+    "divisionCode": "kakinada-rural",
+    "name": "Kakinada East"
+  }
+]

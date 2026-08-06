@@ -12,4 +12,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     long countByVillage(Village village);
     boolean existsByVillage(Village village);
     java.util.List<User> findByRole(String role);
+    boolean existsByIsDemo(boolean isDemo);
 }

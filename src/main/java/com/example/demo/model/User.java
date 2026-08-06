@@ -37,6 +37,9 @@ public class User {
 
     private LocalDateTime resetTokenExpiry;
 
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean isDemo = false;
+
     // Constructors
     public User() {
         this.createdAt = LocalDateTime.now();
@@ -131,5 +134,13 @@ public class User {
 
     public void setResetTokenExpiry(LocalDateTime resetTokenExpiry) {
         this.resetTokenExpiry = resetTokenExpiry;
+    }
+
+    public boolean isDemo() {
+        return isDemo;
+    }
+
+    public void setDemo(boolean demo) {
+        isDemo = demo;
     }
 }

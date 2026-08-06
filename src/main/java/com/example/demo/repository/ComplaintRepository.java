@@ -18,4 +18,7 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
 
     @Query("SELECT COUNT(c) FROM Complaint c")
     long countAll();
+
+    List<Complaint> findByIsDemoTrue();
+    boolean existsByIsDemo(boolean isDemo);
 }

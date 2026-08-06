@@ -17,6 +17,9 @@ public class Photo {
     @ManyToOne
     private Complaint complaint;
 
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean isDemo = false;
+
     public Photo() {}
 
     public Photo(byte[] data, String contentType, Complaint complaint) {
@@ -55,5 +58,13 @@ public class Photo {
 
     public void setComplaint(Complaint complaint) {
         this.complaint = complaint;
+    }
+
+    public boolean isDemo() {
+        return isDemo;
+    }
+
+    public void setDemo(boolean demo) {
+        isDemo = demo;
     }
 }

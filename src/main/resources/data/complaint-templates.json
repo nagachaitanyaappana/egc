@@ -1,0 +1,252 @@
+[
+  {
+    "type": "CHILD_MARRIAGE",
+    "title": "Underage Marriage Arrangement",
+    "description": "A family in the locality is planning to marry off their 16-year-old daughter next month. The child has stopped attending school and is being kept at home. Please intervene immediately to prevent the marriage and ensure the child's safety."
+  },
+  {
+    "type": "CHILD_MARRIAGE",
+    "title": "Child Marriage in Remote Locality",
+    "description": "A 15-year-old girl from the locality was recently married to a much older man. Her family claims it was a customary ceremony, but the child is clearly underage. An inquiry is needed to identify those responsible and provide protection."
+  },
+  {
+    "type": "CHILD_MARRIAGE",
+    "title": "Family Pressuring Minor for Marriage",
+    "description": "The parents of a 17-year-old boy are pressuring him to marry a 14-year-old girl from the same community. Both families are arranging the ceremony secretly. Urgent action is needed to stop the wedding and counsel the families."
+  },
+  {
+    "type": "CHILD_MARRIAGE",
+    "title": "Child Bride Abandoned",
+    "description": "A 16-year-old girl who was married off last year has been abandoned by her husband and his family. She is now staying with her parents and needs rehabilitation and support to resume her education."
+  },
+  {
+    "type": "CHILD_MARRIAGE",
+    "title": "Repeated Child Marriages in Community",
+    "description": "Our locality has seen three child marriages in the past six months. Community elders are aware but remain silent. A strong intervention program and awareness campaign are needed to stop this practice."
+  },
+  {
+    "type": "CHILD_MARRIAGE",
+    "title": "Minor Girl Married to Elderly Man",
+    "description": "A 17-year-old girl from a nearby hamlet was recently married to a 45-year-old man. The marriage was performed secretly at a temple. The child welfare committee should investigate and annul the marriage."
+  },
+  {
+    "type": "POCSO",
+    "title": "Suspected Sexual Abuse of Minor",
+    "description": "A 12-year-old girl from the locality has been visiting a nearby shop regularly, and her behavior has changed drastically. Her parents suspect abuse by the shop owner. Please investigate discreetly and ensure the child's safety."
+  },
+  {
+    "type": "POCSO",
+    "title": "Online Exploitation of Teenager",
+    "description": "A 14-year-old boy from the locality has been secretly meeting an adult he met online. His family noticed unexplained absences and a new mobile phone. Immediate counseling and police investigation are needed."
+  },
+  {
+    "type": "POCSO",
+    "title": "Child Photographed Without Consent",
+    "description": "A neighbor was caught taking inappropriate photos of a 10-year-old girl playing outside. The child is traumatized and refuses to go out. The accused must be arrested and the child provided with psychological support."
+  },
+  {
+    "type": "POCSO",
+    "title": "Minor Girl Missing for Two Days",
+    "description": "A 13-year-old girl from our ward has been missing for two days. Her family received a suspicious call from an unknown number. The police should investigate under POCSO and trace her immediately."
+  },
+  {
+    "type": "POCSO",
+    "title": "Teenager Being Harassed on Way to School",
+    "description": "A 15-year-old girl is being followed and harassed by a group of men on her way to school every morning. She feels unsafe and has stopped going to school. Immediate police patrolling and action are needed."
+  },
+  {
+    "type": "POCSO",
+    "title": "School Staff Accused of Misconduct",
+    "description": "A male teacher at the local upper primary school has been repeatedly calling a 13-year-old girl student to the staff room alone. The girl has become withdrawn and her grades have dropped. The school management must investigate immediately."
+  },
+  {
+    "type": "CHILD_LABOUR",
+    "title": "Child Working at Local Restaurant",
+    "description": "A 12-year-old boy from the locality has been working at a nearby restaurant from 6 AM to 10 PM. He is not attending school and looks malnourished. The employer must be prosecuted under child labor laws."
+  },
+  {
+    "type": "CHILD_LABOUR",
+    "title": "Children Working in Agricultural Fields",
+    "description": "During the harvest season, several children from our locality are sent to work in nearby farms. They miss two to three months of school and are exposed to hazardous pesticides. The labor department should intervene."
+  },
+  {
+    "type": "CHILD_LABOUR",
+    "title": "Child Domestic Helper in Neighbourhood",
+    "description": "A 10-year-old girl from a nearby village is working as a domestic helper in a wealthy household in our locality. She is not allowed to leave the house and is denied education. Rescue and rehabilitation are needed urgently."
+  },
+  {
+    "type": "CHILD_LABOUR",
+    "title": "Children Employed at Construction Site",
+    "description": "A construction site near the school has employed three children aged between 11 and 14 for carrying bricks and mixing cement. This is dangerous and violates child labor laws. The site must be inspected and the children removed."
+  },
+  {
+    "type": "CHILD_LABOUR",
+    "title": "Child Begging at Traffic Signal",
+    "description": "Two children, a boy and a girl, are regularly seen begging at the main traffic signal in the town. They appear to be controlled by an adult. The child welfare committee should rescue them and trace their family."
+  },
+  {
+    "type": "CHILD_LABOUR",
+    "title": "Children Working in Brick Kiln",
+    "description": "Four children from the locality, aged between 10 and 13, were found working at a brick kiln 15 kilometers away. They work from dawn to dusk and are paid very little. The labor department must rescue them and prosecute the owner."
+  },
+  {
+    "type": "SCHOOL_DROPOUTS",
+    "title": "Girl Child Pulled Out of School",
+    "description": "A 14-year-old girl was removed from school by her parents to help with household work and care for her younger siblings. The village education officer should counsel the family and ensure her readmission under the RTE Act."
+  },
+  {
+    "type": "SCHOOL_DROPOUTS",
+    "title": "Children Missing Midday Meals",
+    "description": "Several children in the locality have stopped coming to school because midday meals are not being served regularly. The school management must be held accountable and meals restored immediately to bring children back."
+  },
+  {
+    "type": "SCHOOL_DROPOUTS",
+    "title": "Child Working Instead of Studying",
+    "description": "A 13-year-old boy dropped out of school last year to support his family after his father fell ill. The family needs financial aid and the child needs bridge schooling so he can rejoin regular classes."
+  },
+  {
+    "type": "SCHOOL_DROPOUTS",
+    "title": "Teenager Refusing to Attend School",
+    "description": "A 16-year-old girl refuses to go to school because of repeated harassment by a group of boys. The school management has not acted despite complaints. The girl needs protection and the harassers must be disciplined."
+  },
+  {
+    "type": "SCHOOL_DROPOUTS",
+    "title": "Dropout Rate Rising in Upper Primary",
+    "description": "The upper primary school in our locality has seen a 20 percent dropout rate this year, mainly among children of migrant workers. A special enrollment drive and bridge courses are needed to bring them back."
+  },
+  {
+    "type": "SCHOOL_DROPOUTS",
+    "title": "Child With Disability Denied School Admission",
+    "description": "A 7-year-old child with a mild physical disability was denied admission to the local government school. The headmaster claims there is no ramps or special educators. The education department should ensure inclusive admission and infrastructure."
+  },
+  {
+    "type": "SCHOOL_DROPOUTS",
+    "title": "Children Dropping Out After Class 8",
+    "description": "Many children in the locality drop out after completing class 8 because the nearest high school is 8 kilometers away. There is no bus facility and parents fear sending girls alone. A new high school or transport facility is needed."
+  },
+  {
+    "type": "SCHOOL_DROPOUTS",
+    "title": "Child Acting as Bonded Labor for School Fees",
+    "description": "A 12-year-old boy dropped out of school because his parents could not pay the fees. The landlord who paid the fees is now making the child work on his farm as bonded labor. The case should be investigated under the child labor laws."
+  },
+  {
+    "type": "CHILD_NEGLIGENCY",
+    "title": "Child Left Unsupervised for Days",
+    "description": "A 7-year-old child in the locality is regularly left alone at home for days while the parents work in the city. The child is forced to fend for himself and is often seen wandering the streets. Child protective services must step in."
+  },
+  {
+    "type": "CHILD_NEGLIGENCY",
+    "title": "Parental Neglect Due to Alcohol Abuse",
+    "description": "A 5-year-old girl in the locality is severely neglected because both parents are alcoholics. The child is dirty, underfed, and frequently left outside the house at night. The child welfare committee should provide immediate shelter."
+  },
+  {
+    "type": "CHILD_NEGLIGENCY",
+    "title": "Child Abandoned by Father",
+    "description": "A 9-year-old boy has been abandoned by his father after his parents separated. The mother works as a daily wage laborer and cannot care for him properly. The child needs sponsorship and after-school care support."
+  },
+  {
+    "type": "CHILD_NEGLIGENCY",
+    "title": "Grandparent Unable to Care for Grandchildren",
+    "description": "An elderly grandmother in the locality is struggling to care for three grandchildren after her daughter-in-law passed away. The children are malnourished and miss school regularly. They need nutritional support and supervision."
+  },
+  {
+    "type": "CHILD_NEGLIGENCY",
+    "title": "Child Living on Streets",
+    "description": "A 12-year-old boy from the locality has been living on the streets for the past month after running away from an abusive stepfather. He survives by picking up waste. He needs immediate shelter and counseling."
+  },
+  {
+    "type": "CHILD_NEGLIGENCY",
+    "title": "Child Locked Inside House All Day",
+    "description": "A 6-year-old child is locked inside a small room by his parents while they go to work. The child is given food through a small opening and is not allowed to play outside. This is severe neglect and the child should be rescued."
+  },
+  {
+    "type": "HIV_INFECTION",
+    "title": "Child Living with HIV Needs Support",
+    "description": "A 10-year-old child in the locality is living with HIV and needs regular medication and nutritional support. The family is poor and often skips hospital visits. The health department should ensure consistent care and anti-stigma counseling."
+  },
+  {
+    "type": "HIV_INFECTION",
+    "title": "HIV Positive Teenager Denied Admission",
+    "description": "A 16-year-old HIV positive boy was denied admission to a local school after his status was disclosed. The school must be instructed to admit him immediately and maintain confidentiality as per the law."
+  },
+  {
+    "type": "HIV_INFECTION",
+    "title": "Orphaned Siblings with HIV",
+    "description": "Two orphaned siblings, aged 8 and 11, are HIV positive and living with an aging grandmother. They need regular ART medication, nutritional supplements, and financial support for their care."
+  },
+  {
+    "type": "HIV_INFECTION",
+    "title": "Child Born with HIV Needs Care",
+    "description": "A 6-year-old child born with HIV needs continuous medical care and special diet. The single mother cannot afford the treatment. The district welfare office should provide free medication and nutritional support."
+  },
+  {
+    "type": "HIV_INFECTION",
+    "title": "Stigma Against HIV Positive Child",
+    "description": "An 11-year-old HIV positive girl is being ostracized by the community. Other children are not allowed to play with her, and families are boycotting her household. An awareness program is needed to reduce stigma."
+  },
+  {
+    "type": "HIV_INFECTION",
+    "title": "HIV Positive Child Being Isolated",
+    "description": "A 9-year-old HIV positive child is being isolated by the community. Other children are not allowed to play with him, and his family is socially boycotted. The district AIDS control society should run an awareness drive."
+  },
+  {
+    "type": "HIV_INFECTION",
+    "title": "Mother Died of HIV, Child Needs Care",
+    "description": "A 7-year-old child lost his mother to HIV and is now living with his grandmother. The child is also HIV positive and needs regular ART medication and nutritional support. The social welfare department should enroll him in a support scheme."
+  },
+  {
+    "type": "ORPHANS",
+    "title": "Orphaned Children Need Shelter",
+    "description": "Two children aged 7 and 9 became orphans after their parents died in a road accident. They are currently living with a distant relative who cannot care for them properly. They need admission to a certified child care institution."
+  },
+  {
+    "type": "ORPHANS",
+    "title": "Child Abandoned at Birth",
+    "description": "A newborn baby girl was abandoned at the local temple last week. The baby is healthy but needs a foster family or adoption placement through the child welfare committee."
+  },
+  {
+    "type": "ORPHANS",
+    "title": "Orphaned Teenager Needs Education Support",
+    "description": "A 17-year-old boy lost both parents to illness and is now living alone. He has dropped out of school to support himself through odd jobs. He needs a scholarship, hostel facility, and guidance to complete his education."
+  },
+  {
+    "type": "ORPHANS",
+    "title": "Grandfather Caring for Orphaned Grandchildren",
+    "description": "An 82-year-old grandfather is caring for three orphaned grandchildren after his son and daughter-in-law died of COVID-19. The children need financial support, school supplies, and health check-ups."
+  },
+  {
+    "type": "ORPHANS",
+    "title": "Child in Institutional Care Needs Family",
+    "description": "A 10-year-old girl has been in a local orphanage for five years. Her extended family is willing to take her in but needs financial support. The social welfare department should facilitate her rehabilitation."
+  },
+  {
+    "type": "OTHER",
+    "title": "Child with Disability Needs Wheelchair",
+    "description": "An 11-year-old physically disabled child in the locality needs a wheelchair to attend school. The family cannot afford one. The district administration should provide a free wheelchair under the disability welfare scheme."
+  },
+  {
+    "type": "OTHER",
+    "title": "Child Victim of Snake Bite",
+    "description": "A 9-year-old boy was bitten by a snake while playing in the fields. The primary health center did not have antivenom and the child had to be taken to the district hospital 60 kilometers away. The health center must be stocked with emergency medicines."
+  },
+  {
+    "type": "OTHER",
+    "title": "Children Forced to Perform Religious Rituals",
+    "description": "Some families in the locality force their children to perform extreme religious rituals, including fasting for long hours and carrying heavy objects. This is harmful to their health. The child welfare committee should issue guidelines and warn the community."
+  },
+  {
+    "type": "OTHER",
+    "title": "Child Missing from Home for Three Days",
+    "description": "A 12-year-old boy has not returned home for three days. His parents report that he was last seen near the bus stand. The police should register a missing child case and begin tracing immediately."
+  },
+  {
+    "type": "OTHER",
+    "title": "Family Unable to Support Child",
+    "description": "A single mother with four children is struggling to feed them after losing her job. The eldest child, aged 14, has stopped going to school to help with household work. The family needs immediate ration, financial aid, and child care support."
+  },
+  {
+    "type": "OTHER",
+    "title": "Child Health Issue Not Being Treated",
+    "description": "A 7-year-old girl has been suffering from a persistent fever and skin infection for two months. Her parents are daily wage laborers and cannot afford medical treatment. The health department should provide free diagnosis and medicines."
+  }
+]

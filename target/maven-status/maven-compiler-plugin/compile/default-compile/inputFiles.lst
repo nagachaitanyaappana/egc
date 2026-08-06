@@ -8,11 +8,16 @@
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/controller/PasswordResetController.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/controller/VillageLandingController.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/model/Complaint.java
+/home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/model/Division.java
+/home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/model/DivisionType.java
+/home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/model/Locality.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/model/Mandal.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/model/Photo.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/model/User.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/model/Village.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/repository/ComplaintRepository.java
+/home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/repository/DivisionRepository.java
+/home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/repository/LocalityRepository.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/repository/MandalRepository.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/repository/PhotoRepository.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/repository/UserRepository.java
@@ -22,4 +27,5 @@
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/security/JwtUtil.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/security/SecurityConfig.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/security/TokenBlacklist.java
+/home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/seeder/DataSeeder.java
 /home/naga/Workspace/Projects/NIC/egc/src/main/java/com/example/demo/service/FileStorageService.java

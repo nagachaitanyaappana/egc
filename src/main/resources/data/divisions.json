@@ -1,0 +1,62 @@
+[
+  {
+    "code": "kakinada-urban",
+    "name": "Kakinada Urban",
+    "type": "CORPORATION",
+    "displayOrder": 1
+  },
+  {
+    "code": "kakinada-rural",
+    "name": "Kakinada Rural",
+    "type": "MANDAL",
+    "displayOrder": 2
+  },
+  {
+    "code": "karapa",
+    "name": "Karapa",
+    "type": "MANDAL",
+    "displayOrder": 3
+  },
+  {
+    "code": "peddapuram",
+    "name": "Peddapuram",
+    "type": "MANDAL",
+    "displayOrder": 4
+  },
+  {
+    "code": "samalkota",
+    "name": "Samalkota",
+    "type": "MUNICIPALITY",
+    "displayOrder": 5
+  },
+  {
+    "code": "pithapuram",
+    "name": "Pithapuram",
+    "type": "MANDAL",
+    "displayOrder": 6
+  },
+  {
+    "code": "gollaprolu",
+    "name": "Gollaprolu",
+    "type": "MANDAL",
+    "displayOrder": 7
+  },
+  {
+    "code": "prathipadu",
+    "name": "Prathipadu",
+    "type": "MANDAL",
+    "displayOrder": 8
+  },
+  {
+    "code": "kothapalle",
+    "name": "Kothapalle",
+    "type": "MANDAL",
+    "displayOrder": 9
+  },
+  {
+    "code": "kakinada-nagar-panchayat",
+    "name": "Kakinada Nagar Panchayat",
+    "type": "NAGAR_PANCHAYAT",
+    "displayOrder": 10
+  }
+]

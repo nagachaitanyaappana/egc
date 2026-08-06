@@ -43,20 +43,71 @@
 
                 <div id="formAlert"></div>
 
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3 col-sm-6">
+                        <div class="info-card">
+                            <div class="info-icon">&#x1F9D1;</div>
+                            <div class="info-title">Child Marriage</div>
+                            <div class="info-text">Report early marriage concerns</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="info-card">
+                            <div class="info-icon">&#x1F6E1;</div>
+                            <div class="info-title">Child Safety</div>
+                            <div class="info-text">Report child protection issues</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="info-card">
+                            <div class="info-icon">&#x1F3EB;</div>
+                            <div class="info-title">Education</div>
+                            <div class="info-text">Report school dropout cases</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="info-card">
+                            <div class="info-icon">&#x1F477;</div>
+                            <div class="info-title">Child Labour</div>
+                            <div class="info-text">Report children working cases</div>
+                        </div>
+                    </div>
+                </div>
+
                 <form id="complaintForm">
-                    <div class="complaint-split">
-                        <div class="left-panel">
-                            <label for="complaintContent">Complaint Details</label>
-                            <textarea id="complaintContent" placeholder="Write your complaint here..." style="min-height: 220px;"></textarea>
+                    <div class="mb-3">
+                        <label for="complaintType" class="form-label">Complaint Type</label>
+                        <select class="form-select" id="complaintType" name="type" required>
+                            <option value="">Select complaint type...</option>
+                            <option value="CHILD_MARRIAGE">Child Marriage</option>
+                            <option value="POCSO">POCSO</option>
+                            <option value="CHILD_LABOUR">Child Labour</option>
+                            <option value="SCHOOL_DROPOUTS">School Dropouts</option>
+                            <option value="CHILD_NEGLIGENCY">Children Negligency</option>
+                            <option value="HIV_INFECTION">HIV Infection</option>
+                            <option value="ORPHANS">Orphans</option>
+                            <option value="OTHER">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3" id="otherTypeGroup" style="display:none;">
+                        <label for="otherType" class="form-label">Specify Issue Type</label>
+                        <input type="text" class="form-control" id="otherType" name="otherType" placeholder="e.g. Child missing from home"/>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="complaintContent">Complaint Details</label>
+                        <textarea id="complaintContent" name="complaintContent" placeholder="Write your complaint here..." style="min-height: 220px;"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Upload Photos</label>
+                        <div class="upload-zone">
+                            <i class="bi bi-cloud-upload" style="font-size: 32px; color: var(--text-secondary);"></i>
+                            <div class="small text-muted mt-2">Upload Photos</div>
+                            <input type="file" class="form-control form-control-sm mt-2" id="photos" name="photos" multiple accept="image/*"/>
                         </div>
-                        <div class="right-panel">
-                            <div class="upload-zone">
-                                <i class="bi bi-cloud-upload" style="font-size: 32px; color: var(--text-secondary);"></i>
-                                <div class="small text-muted mt-2">Upload Photos</div>
-                                <input type="file" class="form-control form-control-sm mt-2" id="photos" name="photos" multiple accept="image/*"/>
-                            </div>
-                            <div class="preview-grid mt-2" id="previewGrid"></div>
-                        </div>
+                        <div class="preview-grid mt-2" id="previewGrid"></div>
                     </div>
 
                     <div class="mt-3 d-flex justify-content-end">
@@ -84,8 +135,22 @@
     const previewGrid = document.getElementById('previewGrid');
     const form = document.getElementById('complaintForm');
     const formAlert = document.getElementById('formAlert');
+    const complaintType = document.getElementById('complaintType');
+    const otherTypeGroup = document.getElementById('otherTypeGroup');
+    const otherTypeInput = document.getElementById('otherType');
     let selectedFiles = [];
     let objectUrls = new Set();
+
+    complaintType.addEventListener('change', function () {
+        if (this.value === 'OTHER') {
+            otherTypeGroup.style.display = 'block';
+            otherTypeInput.setAttribute('required', 'required');
+        } else {
+            otherTypeGroup.style.display = 'none';
+            otherTypeInput.removeAttribute('required');
+            otherTypeInput.value = '';
+        }
+    });
 
     fileInput.addEventListener('change', function () {
         const newFiles = Array.from(this.files).filter(f => f.type.startsWith('image/'));
@@ -151,7 +216,6 @@
         lightbox.classList.remove('active');
     }
 
-    // Read the CSRF token from the cookie set by Spring Security's CookieCsrfTokenRepository
     function getCsrfToken() {
         const cookies = document.cookie.split(';');
         for (let i = 0; i < cookies.length; i++) {
@@ -174,6 +238,18 @@
             return;
         }
 
+        const type = complaintType.value;
+        if (!type) {
+            formAlert.innerHTML = '<div class="page-alert page-alert-error show"><i class="bi bi-exclamation-triangle-fill"></i><span>Please select a complaint type.</span></div>';
+            return;
+        }
+
+        const otherType = otherTypeInput.value.trim();
+        if (type === 'OTHER' && !otherType) {
+            formAlert.innerHTML = '<div class="page-alert page-alert-error show"><i class="bi bi-exclamation-triangle-fill"></i><span>Please specify the issue type.</span></div>';
+            return;
+        }
+
         const complaintContent = document.getElementById('complaintContent').value.trim();
         if (!complaintContent) {
             formAlert.innerHTML = '<div class="page-alert page-alert-error show"><i class="bi bi-exclamation-triangle-fill"></i><span>Please enter complaint details.</span></div>';
@@ -188,6 +264,8 @@
 
         const formData = new FormData();
         formData.append('complaintContent', complaintContent);
+        formData.append('type', type);
+        formData.append('otherType', otherType);
         filesToSubmit.forEach(file => formData.append('photos', file));
 
         const headers = {};
@@ -217,7 +295,7 @@
             form.reset();
             selectedFiles = [];
             previewGrid.innerHTML = '';
-            document.getElementById('complaintContent').value = '';
+            otherTypeGroup.style.display = 'none';
         })
         .catch(err => {
             console.error(err);

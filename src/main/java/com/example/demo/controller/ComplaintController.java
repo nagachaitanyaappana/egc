@@ -47,6 +47,8 @@ public class ComplaintController {
     public String submitComplaint(@RequestParam String complaintContent,
                                   @RequestParam("photos") MultipartFile[] photos,
                                   @RequestParam(value = "createdAt", required = false) String createdAtStr,
+                                  @RequestParam(value = "type", required = false) String type,
+                                  @RequestParam(value = "otherType", required = false) String otherType,
                                   @AuthenticationPrincipal UserDetails userDetails,
                                   Model model) throws IOException {
 
@@ -56,6 +58,8 @@ public class ComplaintController {
         Complaint complaint = new Complaint();
         complaint.setUser(currentUser);
         complaint.setContent(complaintContent);
+        complaint.setType(type);
+        complaint.setOtherType(otherType);
 
         if (createdAtStr != null && !createdAtStr.isBlank()) {
             try {
