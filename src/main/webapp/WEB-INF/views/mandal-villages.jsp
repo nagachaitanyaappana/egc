@@ -19,7 +19,7 @@
             <div class="header-left"></div>
             <div class="header-center">
                 <div class="brand-center">
-                    <div class="brand">EGC Admin</div>
+                    <div class="brand">Admin Dashboard</div>
                     <div class="subtitle">Village Directory - <c:out value="${mandal.name}"/></div>
                 </div>
                 <ul class="nav-list">
