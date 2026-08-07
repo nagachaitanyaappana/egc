@@ -171,6 +171,9 @@
                                                     <c:when test="${status == 'Pending'}">
                                                         <span class="locality-badge locality-pending">Pending</span>
                                                     </c:when>
+                                                    <c:when test="${status == 'Inactive'}">
+                                                        <span class="locality-badge locality-pending">Inactive</span>
+                                                    </c:when>
                                                     <c:otherwise>
                                                         <span class="locality-badge locality-no-reports">No Reports</span>
                                                     </c:otherwise>

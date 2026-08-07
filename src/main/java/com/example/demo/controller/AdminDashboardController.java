@@ -352,6 +352,30 @@ public class AdminDashboardController {
         return statusMap.get(locality.getId());
     }
 
+    private List<Complaint> getLatestComplaintsForVillage(Village village) {
+        List<Complaint> complaints = complaintRepository.findByUser_Village_Id(village.getId());
+        return complaints.stream()
+                .filter(c -> c.getCreatedAt() != null)
+                .sorted((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()))
+                .toList();
+    }
+
+    private String getLocalityStatusForReport(List<Complaint> complaints, boolean inactiveReport) {
+        if (complaints == null || complaints.isEmpty()) {
+            return "No Reports";
+        }
+
+        Complaint latestComplaint = complaints.get(0);
+        long daysSince = java.time.temporal.ChronoUnit.DAYS.between(
+                latestComplaint.getCreatedAt().toLocalDate(),
+                java.time.LocalDate.now()
+        );
+
+        return inactiveReport
+                ? (daysSince <= 14 ? "Active" : "Inactive")
+                : (daysSince <= 14 ? "Active" : "Pending");
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/mandal/{id}")
     public String mandalVillages(@PathVariable("id") Long id, Model model) {
@@ -1022,17 +1046,18 @@ public class AdminDashboardController {
                 List<Village> allVillages = villageRepository.findAll();
                 List<Map<String, Object>> pendingLocalities = new ArrayList<>();
                 for (Village v : allVillages) {
-                    List<Complaint> vComplaints = complaintRepository.findByUserVillage(v);
+                    List<Complaint> vComplaints = getLatestComplaintsForVillage(v);
                     Map<String, Object> row = new java.util.HashMap<>();
                     row.put("village", v);
                     if (!vComplaints.isEmpty()) {
-                        row.put("lastReportDate", vComplaints.get(0).getCreatedAt());
+                        Complaint latestComplaint = vComplaints.get(0);
+                        row.put("lastReportDate", latestComplaint.getCreatedAt());
                         long daysSince = java.time.temporal.ChronoUnit.DAYS.between(
-                                vComplaints.get(0).getCreatedAt().toLocalDate(),
+                                latestComplaint.getCreatedAt().toLocalDate(),
                                 java.time.LocalDate.now()
                         );
                         row.put("daysSince", daysSince);
-                        row.put("status", daysSince <= 14 ? "Active" : "Pending");
+                        row.put("status", getLocalityStatusForReport(vComplaints, false));
                     } else {
                         row.put("lastReportDate", null);
                         row.put("daysSince", null);
@@ -1047,17 +1072,18 @@ public class AdminDashboardController {
                 List<Village> allVillages2 = villageRepository.findAll();
                 List<Map<String, Object>> inactiveLocalities = new ArrayList<>();
                 for (Village v : allVillages2) {
-                    List<Complaint> vComplaints = complaintRepository.findByUser_Village_Id(v.getId());
+                    List<Complaint> vComplaints = getLatestComplaintsForVillage(v);
                     Map<String, Object> row = new java.util.HashMap<>();
                     row.put("village", v);
                     if (!vComplaints.isEmpty()) {
-                        row.put("lastReportDate", vComplaints.get(0).getCreatedAt());
+                        Complaint latestComplaint = vComplaints.get(0);
+                        row.put("lastReportDate", latestComplaint.getCreatedAt());
                         long daysSince = java.time.temporal.ChronoUnit.DAYS.between(
-                                vComplaints.get(0).getCreatedAt().toLocalDate(),
+                                latestComplaint.getCreatedAt().toLocalDate(),
                                 java.time.LocalDate.now()
                         );
                         row.put("daysSince", daysSince);
-                        row.put("status", daysSince <= 14 ? "Active" : "Inactive");
+                        row.put("status", getLocalityStatusForReport(vComplaints, true));
                     } else {
                         row.put("lastReportDate", null);
                         row.put("daysSince", null);
@@ -1202,8 +1228,9 @@ public class AdminDashboardController {
             case "PENDING_LOCALITIES", "INACTIVE_LOCALITIES" -> {
                 List<Village> allVillages = villageRepository.findAll();
                 rows.add(new String[]{"Locality Name", "Mandal Name", "Last Report Date", "Days Since Last Report", "Status"});
+                boolean inactiveReport = "INACTIVE_LOCALITIES".equalsIgnoreCase(type);
                 for (Village v : allVillages) {
-                    List<Complaint> vComplaints = complaintRepository.findByUser_Village_Id(v.getId());
+                    List<Complaint> vComplaints = getLatestComplaintsForVillage(v);
                     if (vComplaints.isEmpty()) {
                         rows.add(new String[]{
                                 v.getName(),
@@ -1217,9 +1244,7 @@ public class AdminDashboardController {
                         long daysSince = java.time.temporal.ChronoUnit.DAYS.between(
                                 lastDate.toLocalDate(), java.time.LocalDate.now()
                         );
-                        String status = "PENDING_LOCALITIES".equals(type.toUpperCase())
-                                ? (daysSince <= 14 ? "Active" : "Pending")
-                                : (daysSince <= 14 ? "Active" : "Inactive");
+                        String status = getLocalityStatusForReport(vComplaints, inactiveReport);
                         rows.add(new String[]{
                                 v.getName(),
                                 v.getMandal() != null ? v.getMandal().getName() : "N/A",
@@ -1438,8 +1463,9 @@ public class AdminDashboardController {
                 columns = 5;
                 List<Village> allVillages = villageRepository.findAll();
                 rows.add(new String[]{"Locality Name", "Mandal Name", "Last Report Date", "Days Since Last Report", "Status"});
+                boolean inactiveReport = "INACTIVE_LOCALITIES".equalsIgnoreCase(type);
                 for (Village v : allVillages) {
-                    List<Complaint> vComplaints = complaintRepository.findByUser_Village_Id(v.getId());
+                    List<Complaint> vComplaints = getLatestComplaintsForVillage(v);
                     if (vComplaints.isEmpty()) {
                         rows.add(new String[]{
                                 v.getName(),
@@ -1453,9 +1479,7 @@ public class AdminDashboardController {
                         long daysSince = java.time.temporal.ChronoUnit.DAYS.between(
                                 lastDate.toLocalDate(), java.time.LocalDate.now()
                         );
-                        String status = "PENDING_LOCALITIES".equals(type.toUpperCase())
-                                ? (daysSince <= 14 ? "Active" : "Pending")
-                                : (daysSince <= 14 ? "Active" : "Inactive");
+                        String status = getLocalityStatusForReport(vComplaints, inactiveReport);
                         rows.add(new String[]{
                                 v.getName(),
                                 v.getMandal() != null ? v.getMandal().getName() : "N/A",
