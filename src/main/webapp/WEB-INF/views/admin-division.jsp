@@ -19,7 +19,7 @@
             <div class="header-left"></div>
             <div class="header-center">
                 <div class="brand-center">
-                    <div class="brand">EGC Admin</div>
+                    <div class="brand">Admin Dashboard</div>
                     <div class="subtitle"><c:out value="${division.name}"/></div>
                 </div>
                 <ul class="nav-list">
@@ -125,25 +125,31 @@
                             </div>
                     </c:when>
                     <c:otherwise>
-                        <div class="row g-3" style="display:flex; flex-wrap:wrap;">
-                            <c:forEach var="locality" items="${localities}" varStatus="loop">
-                                <c:set var="lastSubmission" value="${lastSubmissionMap[locality.id]}"/>
-                                <c:set var="status" value="${statusMap[locality.id]}"/>
-                                <c:set var="locComplaints" value="${complaintCountMap[locality.id]}"/>
-                                <div class="col-md-3 col-sm-4 col-6">
-                                    <a href="${pageContext.request.contextPath}/admin/village/${locality.id}" class="text-decoration-none d-block">
-                                        <div class="stat-card stat-color-${loop.index % 20}">
-                                            <div class="stat-value" style="font-size:1.4rem;">${loop.index + 1}</div>
-                                            <div class="stat-label"><c:out value="${locality.name}"/></div>
-                                            <c:if test="${not empty lastSubmission}">
-                                                <div class="small text-muted">
-                                                    <i class="bi bi-clock"></i> <c:out value="${lastSubmission}"/>
-                                                </div>
-                                            </c:if>
-                                            <c:if test="${empty lastSubmission}">
-                                                <div class="small text-muted">No submissions yet</div>
-                                            </c:if>
-                                            <div class="small mt-1">
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Locality Name</th>
+                                        <th>Status</th>
+                                        <th>Last Report</th>
+                                        <th>Complaints</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:forEach var="locality" items="${localities}" varStatus="loop">
+                                        <c:set var="lastSubmission" value="${lastSubmissionMap[locality.id]}"/>
+                                        <c:set var="status" value="${statusMap[locality.id]}"/>
+                                        <c:set var="locComplaints" value="${complaintCountMap[locality.id]}"/>
+                                        <c:set var="lastReport" value="${lastReportMap[locality.id]}"/>
+                                        <tr>
+                                            <td>${loop.index + 1}</td>
+                                            <td>
+                                                <a href="${pageContext.request.contextPath}/admin/village/${locality.id}" class="text-decoration-none">
+                                                    <c:out value="${locality.name}"/>
+                                                </a>
+                                            </td>
+                                            <td>
                                                 <c:choose>
                                                     <c:when test="${status == 'Active'}">
                                                         <span class="locality-badge locality-active">Active</span>
@@ -155,69 +161,26 @@
                                                         <span class="locality-badge locality-no-reports">No Reports</span>
                                                     </c:otherwise>
                                                 </c:choose>
-                                                <span class="ms-2 text-muted">${locComplaints} complaints</span>
-                                            </div>
-                                            <div class="small mt-1">
-                                                <span class="btn btn-sm btn-outline-primary" style="font-size:0.75rem; padding:0.25rem 0.5rem;">View Complaints</span>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </c:forEach>
+                                            </td>
+                                            <td>${lastReport}</td>
+                                            <td>${locComplaints}</td>
+                                        </tr>
+                                    </c:forEach>
+                                </tbody>
+                            </table>
                         </div>
                     </c:otherwise>
                 </c:choose>
             </div>
         </div>
     </div>
+     
 
-    <footer class="app-footer" style="background:var(--accent); color:rgba(255,255,255,0.85); padding:1.2rem 0; text-align:center; font-size:0.85rem;">
-        EGC - Child Welfare Monitoring System<br>Government of Andhra Pradesh<br>Version 1.0 EGC - Child Welfare Monitoring System<br>Government of Andhra Pradesh<br>Version 1.0 &copy; 2025 EGC Administration. Government of Andhra Pradesh. All rights reserved.copy; 2026copy; 2026
+    <footer class="app-footer">
+        Child Welfare Monitoring System<br>
+        Government of Andhra Pradesh<br>
+        Version 1.0 &copy; 2026
     </footer>
-</div>
     <div class="toast-container" id="toastContainer"></div>
-    <script>
-        function showToast(message, type) {
-            type = type || 'info';
-            const container = document.getElementById('toastContainer');
-            if (!container) return;
-
-            const iconMap = {
-                success: 'bi-check-circle-fill',
-                error: 'bi-exclamation-triangle-fill',
-                warning: 'bi-exclamation-circle-fill',
-                info: 'bi-info-circle-fill'
-            };
-
-            const toast = document.createElement('div');
-            toast.className = 'toast ' + type;
-            toast.innerHTML = '<i class="bi ' + iconMap[type] + '"></i>' +
-                '<div class="toast-content">' + message + '</div>' +
-                '<button class="toast-close" onclick="this.parentElement.remove()">&times;</button>';
-
-            container.appendChild(toast);
-
-            setTimeout(function() {
-                toast.classList.add('hiding');
-                setTimeout(function() {
-                    if (toast.parentElement) {
-                        toast.remove();
-                    }
-                }, 300);
-            }, 4000);
-        }
-
-        function setLoading(buttonId, isLoading) {
-            const btn = document.getElementById(buttonId);
-            if (!btn) return;
-            if (isLoading) {
-                btn.classList.add('loading');
-                btn.disabled = true;
-            } else {
-                btn.classList.remove('loading');
-                btn.disabled = false;
-            }
-        }
-    </script>
 </body>
 </html>

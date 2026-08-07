@@ -17,7 +17,7 @@
         <div class="wrap-login100">
             <form class="login100-form" id="loginForm">
                 <span class="login100-form-title">
-                    EGC Administration
+                    Child Welfare Monitoring System
                 </span>
 
                 <c:if test="${param.logoutSuccess == 'true'}">

@@ -56,7 +56,6 @@
 <div class="limiter">
     <div class="container-login100">
         <div class="wrap-login100">
-            <div class="login-title">EGC Administration</div>
 
             <c:if test="${notFound != null}">
                 <div class="page-alert page-alert-error show">
@@ -172,7 +171,6 @@
         });
     });
 </script>
-    <div class="toast-container" id="toastContainer"></div>
     <script>
         function showToast(message, type) {
             type = type || 'info';
@@ -216,5 +214,11 @@
             }
         }
     </script>
+    <footer class="app-footer">
+        Child Welfare Monitoring System<br>
+        Government of Andhra Pradesh<br>
+        Version 1.0 &copy; 2026
+    </footer>
+    <div class="toast-container" id="toastContainer"></div>
 </body>
 </html>

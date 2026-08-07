@@ -68,17 +68,17 @@
                                              <div class="stat-value" style="font-size:1.4rem;">${loop.index + 1}</div>
                                              <div class="stat-label"><c:out value="${village.name}"/></div>
                                              <div class="small"><i class="bi bi-geo-alt"></i> ${village.district}</div>
-                                             <c:if test="${not empty lastSubmission}">
-                                                 <c:set var="daysDiff" value="${T(java.time.temporal.ChronoUnit.DAYS).between(lastSubmission.toLocalDate(), T(java.time.LocalDate).now())}"/>
-                                                 <c:choose>
-                                                     <c:when test="${daysDiff <= 14}">
-                                                         <span class="locality-badge locality-active">Active</span>
-                                                     </c:when>
-                                                     <c:otherwise>
-                                                         <span class="locality-badge locality-pending">Pending</span>
-                                                     </c:otherwise>
-                                                 </c:choose>
-                                             </c:if>
+                                              <c:if test="${not empty lastSubmission}">
+                                                  <c:set var="daysDiff" value="${daysSinceMap[village.id]}"/>
+                                                  <c:choose>
+                                                      <c:when test="${daysDiff <= 14}">
+                                                          <span class="locality-badge locality-active">Active</span>
+                                                      </c:when>
+                                                      <c:otherwise>
+                                                          <span class="locality-badge locality-pending">Pending</span>
+                                                      </c:otherwise>
+                                                  </c:choose>
+                                              </c:if>
                                          </div>
                                     </a>
                                 </div>
@@ -118,10 +118,8 @@
     </div>
 
     <footer class="app-footer" style="background:var(--accent); color:rgba(255,255,255,0.85); padding:1.2rem 0; text-align:center; font-size:0.85rem;">
-        EGC - Child Welfare Monitoring System<br>Government of Andhra Pradesh<br>Version 1.0 EGC - Child Welfare Monitoring System<br>Government of Andhra Pradesh<br>Version 1.0 &copy; 2025 EGC Administration. Government of Andhra Pradesh. All rights reserved.copy; 2026copy; 2026
     </footer>
 </div>
-    <div class="toast-container" id="toastContainer"></div>
     <script>
         function showToast(message, type) {
             type = type || 'info';
@@ -165,5 +163,11 @@
             }
         }
     </script>
+    <footer class="app-footer">
+        Child Welfare Monitoring System<br>
+        Government of Andhra Pradesh<br>
+        Version 1.0 &copy; 2026
+    </footer>
+    <div class="toast-container" id="toastContainer"></div>
 </body>
 </html>

@@ -3,7 +3,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>EGC - Child Welfare Monitoring System</title>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="${pageContext.request.contextPath}/resources/css/bootstrap.min.css" rel="stylesheet"/>
@@ -102,13 +101,8 @@
         </div>
     </div>
 
-    <footer class="app-footer">
-        EGC - Child Welfare Monitoring System<br>
-        Government of Andhra Pradesh<br>
-        Version 1.0 &copy; 2026
-    </footer>
+    
 </div>
-    <div class="toast-container" id="toastContainer"></div>
     <script>
         function showToast(message, type) {
             type = type || 'info';
@@ -134,5 +128,11 @@
             });
         }
     </script>
+    <footer class="app-footer">
+        Child Welfare Monitoring System<br>
+        Government of Andhra Pradesh<br>
+        Version 1.0 &copy; 2026
+    </footer>
+    <div class="toast-container" id="toastContainer"></div>
 </body>
 </html>

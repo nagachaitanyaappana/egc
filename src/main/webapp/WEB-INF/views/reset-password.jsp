@@ -67,7 +67,6 @@
         <a href="${pageContext.request.contextPath}/login">Back to Login</a>
     </p>
 </div>
-    <div class="toast-container" id="toastContainer"></div>
     <script>
         function showToast(message, type) {
             type = type || 'info';
@@ -111,5 +110,11 @@
             }
         }
     </script>
+    <footer class="app-footer">
+        Child Welfare Monitoring System<br>
+        Government of Andhra Pradesh<br>
+        Version 1.0 &copy; 2026
+    </footer>
+    <div class="toast-container" id="toastContainer"></div>
 </body>
 </html>

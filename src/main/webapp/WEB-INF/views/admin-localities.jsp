@@ -19,7 +19,7 @@
             <div class="header-left"></div>
             <div class="header-center">
                 <div class="brand-center">
-                    <div class="brand">EGC Admin</div>
+                    <div class="brand">Admin Dashboard</div>
                     <div class="subtitle">Administrative Divisions</div>
                 </div>
                 <ul class="nav-list">
@@ -84,7 +84,7 @@
                         <select class="form-select" id="divisionType" name="divisionType">
                             <option value="">All Types</option>
                             <c:forEach var="type" items="${divisionTypes}">
-                                <option value="${type}" ${selectedDivisionType == type ? 'selected' : ''}>
+                                <option value="${type}" ${selectedDivisionType == type.toString() ? 'selected' : ''}>
                                     <c:choose>
                                         <c:when test="${type == 'MANDAL'}">Mandal</c:when>
                                         <c:when test="${type == 'MUNICIPALITY'}">Municipality</c:when>
@@ -169,10 +169,8 @@
     </div>
 
     <footer class="app-footer" style="background:var(--accent); color:rgba(255,255,255,0.85); padding:1.2rem 0; text-align:center; font-size:0.85rem;">
-        EGC - Child Welfare Monitoring System<br>Government of Andhra Pradesh<br>Version 1.0 EGC - Child Welfare Monitoring System<br>Government of Andhra Pradesh<br>Version 1.0 &copy; 2025 EGC Administration. Government of Andhra Pradesh. All rights reserved.copy; 2026copy; 2026
     </footer>
 </div>
-    <div class="toast-container" id="toastContainer"></div>
     <script>
         function showToast(message, type) {
             type = type || 'info';
@@ -216,5 +214,11 @@
             }
         }
     </script>
+    <footer class="app-footer">
+        Child Welfare Monitoring System<br>
+        Government of Andhra Pradesh<br>
+        Version 1.0 &copy; 2026
+    </footer>
+    <div class="toast-container" id="toastContainer"></div>
 </body>
 </html>

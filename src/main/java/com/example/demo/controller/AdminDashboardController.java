@@ -240,11 +240,12 @@ public class AdminDashboardController {
         java.util.Map<Long, java.time.LocalDateTime> lastSubmissionMap = new java.util.HashMap<>();
         java.util.Map<Long, String> statusMap = new java.util.HashMap<>();
         java.util.Map<Long, Long> complaintCountMap = new java.util.HashMap<>();
+        java.util.Map<Long, String> lastReportMap = new java.util.HashMap<>();
 
         java.util.List<Locality> sortedLocalities = new java.util.ArrayList<>(localities);
         sortedLocalities.sort((a, b) -> {
-            String statusA = getLocalityStatus(a, lastSubmissionMap, statusMap);
-            String statusB = getLocalityStatus(b, lastSubmissionMap, statusMap);
+            String statusA = getLocalityStatus(a, lastSubmissionMap, statusMap, lastReportMap);
+            String statusB = getLocalityStatus(b, lastSubmissionMap, statusMap, lastReportMap);
             int orderA = switch (statusA) {
                 case "No Reports" -> 0;
                 case "Pending" -> 1;
@@ -257,7 +258,12 @@ public class AdminDashboardController {
                 case "Active" -> 2;
                 default -> 3;
             };
-            return Integer.compare(orderA, orderB);
+            if (orderA != orderB) {
+                return Integer.compare(orderA, orderB);
+            }
+            LocalDateTime dateA = lastSubmissionMap.getOrDefault(a.getId(), LocalDateTime.MIN);
+            LocalDateTime dateB = lastSubmissionMap.getOrDefault(b.getId(), LocalDateTime.MIN);
+            return dateB.compareTo(dateA);
         });
 
         for (Locality locality : sortedLocalities) {
@@ -271,12 +277,20 @@ public class AdminDashboardController {
             if (localityComplaints.isEmpty()) {
                 pendingComplaints++;
                 statusMap.put(locality.getId(), "No Reports");
+                lastReportMap.put(locality.getId(), "Never");
             } else {
                 lastSubmissionMap.put(locality.getId(), localityComplaints.get(0).getCreatedAt());
                 long daysSince = java.time.temporal.ChronoUnit.DAYS.between(
                         localityComplaints.get(0).getCreatedAt().toLocalDate(),
                         java.time.LocalDate.now()
                 );
+                if (daysSince == 0) {
+                    lastReportMap.put(locality.getId(), "Today");
+                } else if (daysSince == 1) {
+                    lastReportMap.put(locality.getId(), "Yesterday");
+                } else {
+                    lastReportMap.put(locality.getId(), daysSince + " days ago");
+                }
                 if (daysSince > 14) {
                     pendingComplaints++;
                     statusMap.put(locality.getId(), "Pending");
@@ -298,12 +312,13 @@ public class AdminDashboardController {
         model.addAttribute("pendingComplaints", pendingComplaints);
         model.addAttribute("criticalComplaints", criticalComplaints);
         model.addAttribute("lastSubmissionMap", lastSubmissionMap);
+        model.addAttribute("lastReportMap", lastReportMap);
         model.addAttribute("statusMap", statusMap);
         model.addAttribute("complaintCountMap", complaintCountMap);
         return "admin-division";
     }
 
-    private String getLocalityStatus(Locality locality, java.util.Map<Long, java.time.LocalDateTime> lastSubmissionMap, java.util.Map<Long, String> statusMap) {
+    private String getLocalityStatus(Locality locality, java.util.Map<Long, java.time.LocalDateTime> lastSubmissionMap, java.util.Map<Long, String> statusMap, java.util.Map<Long, String> lastReportMap) {
         if (statusMap.containsKey(locality.getId())) {
             return statusMap.get(locality.getId());
         }
@@ -314,12 +329,24 @@ public class AdminDashboardController {
         }
         if (localityComplaints.isEmpty()) {
             statusMap.put(locality.getId(), "No Reports");
+            if (lastReportMap != null) {
+                lastReportMap.put(locality.getId(), "Never");
+            }
         } else {
             lastSubmissionMap.put(locality.getId(), localityComplaints.get(0).getCreatedAt());
             long daysSince = java.time.temporal.ChronoUnit.DAYS.between(
                     localityComplaints.get(0).getCreatedAt().toLocalDate(),
                     java.time.LocalDate.now()
             );
+            if (lastReportMap != null) {
+                if (daysSince == 0) {
+                    lastReportMap.put(locality.getId(), "Today");
+                } else if (daysSince == 1) {
+                    lastReportMap.put(locality.getId(), "Yesterday");
+                } else {
+                    lastReportMap.put(locality.getId(), daysSince + " days ago");
+                }
+            }
             statusMap.put(locality.getId(), daysSince > 14 ? "Pending" : "Active");
         }
         return statusMap.get(locality.getId());
@@ -342,10 +369,16 @@ public class AdminDashboardController {
                 .toList();
 
         java.util.Map<Long, java.time.LocalDateTime> lastSubmissionMap = new java.util.HashMap<>();
+        java.util.Map<Long, Long> daysSinceMap = new java.util.HashMap<>();
         for (Village v : villages) {
             List<Complaint> complaints = complaintRepository.findByUserVillage(v);
             if (!complaints.isEmpty()) {
                 lastSubmissionMap.put(v.getId(), complaints.get(0).getCreatedAt());
+                long daysSince = java.time.temporal.ChronoUnit.DAYS.between(
+                        complaints.get(0).getCreatedAt().toLocalDate(),
+                        java.time.LocalDate.now()
+                );
+                daysSinceMap.put(v.getId(), daysSince);
             }
         }
 
@@ -354,6 +387,7 @@ public class AdminDashboardController {
         model.addAttribute("submitted", submitted);
         model.addAttribute("notSubmitted", notSubmitted);
         model.addAttribute("lastSubmissionMap", lastSubmissionMap);
+        model.addAttribute("daysSinceMap", daysSinceMap);
         return "mandal-villages";
     }
 
@@ -1480,8 +1514,8 @@ public class AdminDashboardController {
 
         List<Locality> localities = division.getLocalities();
         localities.sort((a, b) -> {
-            String statusA = getLocalityStatus(a, new java.util.HashMap<>(), new java.util.HashMap<>());
-            String statusB = getLocalityStatus(b, new java.util.HashMap<>(), new java.util.HashMap<>());
+            String statusA = getLocalityStatus(a, new java.util.HashMap<>(), new java.util.HashMap<>(), new java.util.HashMap<>());
+            String statusB = getLocalityStatus(b, new java.util.HashMap<>(), new java.util.HashMap<>(), new java.util.HashMap<>());
             int orderA = switch (statusA) { case "No Reports" -> 0; case "Pending" -> 1; case "Active" -> 2; default -> 3; };
             int orderB = switch (statusB) { case "No Reports" -> 0; case "Pending" -> 1; case "Active" -> 2; default -> 3; };
             return Integer.compare(orderA, orderB);
@@ -1504,7 +1538,7 @@ public class AdminDashboardController {
             Village matchedVillage = villageRepository.findByName(locality.getName()).orElse(null);
             List<Complaint> vComplaints = matchedVillage != null ? complaintRepository.findByUserVillage(matchedVillage) : List.of();
             String lastSubmission = vComplaints.isEmpty() ? "" : vComplaints.get(0).getCreatedAt().toString();
-            String status = getLocalityStatus(locality, new java.util.HashMap<>(), new java.util.HashMap<>());
+            String status = getLocalityStatus(locality, new java.util.HashMap<>(), new java.util.HashMap<>(), new java.util.HashMap<>());
             row.createCell(0).setCellValue(locality.getName());
             row.createCell(1).setCellValue(lastSubmission);
             row.createCell(2).setCellValue(status);
@@ -1535,8 +1569,8 @@ public class AdminDashboardController {
 
         List<Locality> localities = division.getLocalities();
         localities.sort((a, b) -> {
-            String statusA = getLocalityStatus(a, new java.util.HashMap<>(), new java.util.HashMap<>());
-            String statusB = getLocalityStatus(b, new java.util.HashMap<>(), new java.util.HashMap<>());
+            String statusA = getLocalityStatus(a, new java.util.HashMap<>(), new java.util.HashMap<>(), new java.util.HashMap<>());
+            String statusB = getLocalityStatus(b, new java.util.HashMap<>(), new java.util.HashMap<>(), new java.util.HashMap<>());
             int orderA = switch (statusA) { case "No Reports" -> 0; case "Pending" -> 1; case "Active" -> 2; default -> 3; };
             int orderB = switch (statusB) { case "No Reports" -> 0; case "Pending" -> 1; case "Active" -> 2; default -> 3; };
             return Integer.compare(orderA, orderB);
@@ -1570,7 +1604,7 @@ public class AdminDashboardController {
             Village matchedVillage = villageRepository.findByName(locality.getName()).orElse(null);
             List<Complaint> vComplaints = matchedVillage != null ? complaintRepository.findByUserVillage(matchedVillage) : List.of();
             String lastSubmission = vComplaints.isEmpty() ? "" : vComplaints.get(0).getCreatedAt().toString();
-            String status = getLocalityStatus(locality, new java.util.HashMap<>(), new java.util.HashMap<>());
+            String status = getLocalityStatus(locality, new java.util.HashMap<>(), new java.util.HashMap<>(), new java.util.HashMap<>());
 
             table.addCell(new com.lowagie.text.Phrase(locality.getName(), bodyFont));
             table.addCell(new com.lowagie.text.Phrase(lastSubmission, bodyFont));

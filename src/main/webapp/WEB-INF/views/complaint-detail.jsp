@@ -18,7 +18,7 @@
             <div class="header-left"></div>
             <div class="header-center">
                 <div class="brand-center">
-                    <div class="brand">EGC Admin</div>
+                    <div class="brand">Complaint Details</div>
                     <div class="subtitle">Complaint Details</div>
                 </div>
                 <ul class="nav-list">
@@ -156,7 +156,6 @@
     </div>
 
     <footer class="app-footer" style="background:var(--accent); color:rgba(255,255,255,0.85); padding:1.2rem 0; text-align:center; font-size:0.85rem;">
-        EGC - Child Welfare Monitoring System<br>Government of Andhra Pradesh<br>Version 1.0 EGC - Child Welfare Monitoring System<br>Government of Andhra Pradesh<br>Version 1.0 &copy; 2025 EGC Administration. Government of Andhra Pradesh. All rights reserved.copy; 2026copy; 2026
     </footer>
 </div>
 
@@ -274,7 +273,6 @@
             });
     }
 </script>
-    <div class="toast-container" id="toastContainer"></div>
     <script>
         function showToast(message, type) {
             type = type || 'info';
@@ -318,5 +316,11 @@
             }
         }
     </script>
+    <footer class="app-footer">
+        Child Welfare Monitoring System<br>
+        Government of Andhra Pradesh<br>
+        Version 1.0 &copy; 2026
+    </footer>
+    <div class="toast-container" id="toastContainer"></div>
 </body>
 </html>

@@ -43,7 +43,11 @@ public class ComplaintController {
 
     @PreAuthorize("hasRole('LOCALITY_USER')")
     @GetMapping("/complaint")
-    public String showComplaintForm(Model model) {
+    public String showComplaintForm(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        User currentUser = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new IllegalStateException("Authenticated user not found"));
+        String localityName = currentUser.getVillage() != null ? currentUser.getVillage().getName() : currentUser.getUsername();
+        model.addAttribute("localityName", localityName);
         return "complaint-form";
     }
 

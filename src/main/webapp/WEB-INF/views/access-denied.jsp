@@ -17,7 +17,7 @@
             <div class="header-left"></div>
             <div class="header-center">
                 <div class="brand-center">
-                    <div class="brand">EGC Admin</div>
+                    <div class="brand">Access Denied</div>
                     <div class="subtitle">Access Denied</div>
                 </div>
             </div>
@@ -45,13 +45,8 @@
         </div>
     </div>
 
-    <footer class="app-footer">
-        EGC - Child Welfare Monitoring System<br>
-        Government of Andhra Pradesh<br>
-        Version 1.0 &copy; 2026
-    </footer>
+    
 </div>
-    <div class="toast-container" id="toastContainer"></div>
     <script>
         function showToast(message, type) {
             type = type || 'info';
@@ -65,5 +60,11 @@
             setTimeout(function() { toast.classList.add('hiding'); setTimeout(function() { if (toast.parentElement) toast.remove(); }, 300); }, 4000);
         }
     </script>
+    <footer class="app-footer">
+        Child Welfare Monitoring System<br>
+        Government of Andhra Pradesh<br>
+        Version 1.0 &copy; 2026
+    </footer>
+    <div class="toast-container" id="toastContainer"></div>
 </body>
 </html>
